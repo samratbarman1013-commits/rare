@@ -71,11 +71,11 @@
   function headerHTML(active) {
     var nav = [
       ["index.html", "Home", "home"],
-      ["images.html", "Images", "images"],
       ["videos.html", "Videos", "videos"],
       ["notes.html", "Notes", "notes"],
-      ["otherside.html", "Other Side", "otherside"],
-      ["about.html", "About Us", "about"]
+      ["images.html", "Images", "images"],
+      ["about.html", "About Us", "about"],
+      ["otherside.html", "Other Side", "otherside"]
     ].map(function (n) {
       return '<a href="' + n[0] + '"' + (active === n[2] ? ' class="active"' : "") + ">" + n[1] + "</a>";
     }).join("");
@@ -84,7 +84,7 @@
     }).join("");
     return '' +
       '<div class="wrap">' +
-      '<div class="header-top">' +
+      '<div class="tier1">' +
       '<a class="brand" href="index.html"><span class="brand-mark">R</span>' +
       '<span>Rare<small>community archive</small></span></a>' +
       '<form class="search-form" id="search-form" action="search.html" method="get" role="search" autocomplete="off">' +
@@ -92,8 +92,8 @@
       '<button type="submit">Search</button>' +
       '<div class="suggest" id="suggest" role="listbox"></div>' +
       "</form></div>" +
-      '<nav class="main-nav" aria-label="Primary">' + nav + "</nav>" +
-      '<div class="cat-strip" aria-label="Categories">' + chips + "</div>" +
+      '<nav class="tier2" aria-label="Pages"><span class="tier-label">Pages</span>' + nav + "</nav>" +
+      '<nav class="tier3" aria-label="Categories"><span class="tier-label">Categories</span><div class="cat-strip">' + chips + "</div></nav>" +
       "</div>";
   }
   function footerHTML() {
