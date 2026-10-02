@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search — Rare</title>
+<meta name="description" content="Search the Rare archive of rare photos, videos and notes.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="search">
+<header class="site-header" id="site-header"></header>
+<div class="wrap layout full">
+  <main>
+    <h1>Search the archive</h1>
+    <form class="search-form" id="big-search" action="search.html" method="get" role="search" style="max-width:720px;margin:12px 0 6px">
+      <input type="search" name="q" id="search-input" placeholder="Try &quot;prototype&quot;, &quot;demo&quot;, &quot;map&quot; or &quot;lost&quot;&hellip;" aria-label="Search Rare" autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
+    <p class="tagline" id="search-summary"></p>
+    <div id="search-results"></div>
+  </main>
+</div>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>
