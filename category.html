@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Category — Rare</title>
+<meta name="description" content="Browse a Rare category — History, Gaming, Recent, News, Music, Movie or Planned.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="category">
+<header class="site-header" id="site-header"></header>
+<div class="wrap layout">
+  <main>
+    <h1 id="cat-title">Category</h1>
+    <p class="lead" id="cat-blurb"></p>
+    <p class="small"><b id="cat-count">0</b> entries in this category.</p>
+    <div id="cat-grid"></div>
+  </main>
+  <aside class="sidebar">
+    <div class="side-box"><h3>All categories</h3><ul id="cat-side"></ul></div>
+    <div class="side-box"><h3>Contribute</h3>
+      <p class="small">Anyone can add to Rare. Send a photo, video or note for this category.</p>
+      <p><a class="btn" href="about.html#submit" style="padding:8px 16px;font-size:.85rem">Submit</a></p>
+    </div>
+  </aside>
+</div>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var list = document.getElementById("cat-side");
+  if (list) list.innerHTML = window.RARE_CATEGORIES.map(function(c){
+    return '<li><a href="category.html?cat='+encodeURIComponent(c.key)+'">'+c.key+'</a></li>';
+  }).join("");
+});
+</script>
+</body>
+</html>
