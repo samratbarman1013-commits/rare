@@ -316,3 +316,29 @@ body.shell #site-header{flex:0 0 auto;z-index:60}
   .sheet{transition:none}
   .track{scroll-behavior:auto}
 }
+
+/* tier-1 About link */
+.about-link{padding:8px 16px;border:1px solid var(--border);border-radius:4px;font-size:.9rem;color:var(--text);white-space:nowrap}
+.about-link:hover{border-color:var(--link);color:var(--link);text-decoration:none}
+.about-link.active{background:var(--rare-soft);border-color:var(--rare);color:var(--rare);font-weight:600}
+
+/* starred markers */
+.card .star{position:absolute;top:8px;right:8px;color:#ffcc33;font-size:1.05rem;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.star-inline{color:#b8860b;font-size:.8rem;margin-left:8px}
+
+/* automatic section/category tags on an entry */
+.auto-tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 12px}
+.atag{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.browse-cta{border:1px solid var(--link);background:#fff;color:var(--link);border-radius:999px;padding:4px 12px;font-size:.8rem;font-family:inherit;cursor:pointer}
+.browse-cta:hover{background:var(--link);color:#fff}
+
+/* section > category > filter bar */
+.browse-bar{border:1px solid var(--border);border-radius:8px;background:var(--panel);padding:12px 14px;margin:8px 0 14px;display:flex;flex-direction:column;gap:10px}
+.bb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bb-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);min-width:60px}
+.bb-section{font-weight:600;font-family:var(--serif)}
+.bb-cat,.bb-type{padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:#fff;font-family:inherit;font-size:.88rem;color:var(--text)}
+.fchips{display:flex;gap:8px;flex-wrap:wrap}
+.fchip{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 14px;font-family:inherit;font-size:.85rem;color:var(--text);cursor:pointer}
+.fchip:hover{border-color:var(--link);color:var(--link)}
+.fchip.active{background:var(--link);border-color:var(--link);color:#fff}
