@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Us — Rare</title>
+<meta name="description" content="About Rare — a community archive of rare photos, videos and notes. Contact the founder and contribute a rare find.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="about">
+<header class="site-header" id="site-header"></header>
+<div class="wrap layout">
+  <main>
+    <h1>About Us</h1>
+    <p class="lead">Rare is a community archive of the hard-to-find: photographs, footage and written notes that might otherwise disappear. It works a little like Wikipedia — it is open, it is explained for newcomers, and <b>anyone can contribute</b>.</p>
+
+    <h2>Our idea</h2>
+    <p>Most rare things are not lost all at once. They fade — a negative in an attic, a demo tape in a drawer, a set of notes in a family file. Rare gives them a home with a short, honest description: what it is, where it came from, and why it is worth keeping.</p>
+    <p>We publish responsibly. Material is shared for study and remembrance, and rights stay with the original owners. If something is yours and you would like it changed or removed, write to us and we will act.</p>
+
+    <h2>How to contribute</h2>
+    <p>There is no application and no account to create. Send a photo, a video link or a set of notes with a sentence or two of context. If it is rare and it is yours to share, it can appear in the archive — credited however you wish.</p>
+
+    <h2 id="submit">Submit a Rare Find</h2>
+    <div class="notice" id="form-note">This form emails your submission straight to us. Prefer to write directly? Use the Gmail or WhatsApp links in the sidebar.</div>
+    <form id="submit-form" class="form-grid" method="POST" novalidate>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" placeholder="How should we credit you?" required>
+      </div>
+      <div class="field">
+        <label for="f-email">Your email</label>
+        <input id="f-email" name="email" type="email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="f-type">What are you submitting?</label>
+        <select id="f-type" name="type">
+          <option value="Photo">Rare photo</option>
+          <option value="Video">Rare video</option>
+          <option value="Note">Rare note</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-cat">Category</label>
+        <select id="f-cat" name="category">
+          <option>History</option><option>Gaming</option><option>News</option>
+          <option>Music</option><option>Movie</option><option>Planned</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-title">Title of the find</label>
+        <input id="f-title" name="title" type="text" placeholder="e.g. Lost studio demo, 1974" required>
+      </div>
+      <div class="field">
+        <label for="f-link">Link or source (optional)</label>
+        <input id="f-link" name="link" type="text" placeholder="A link, or where it came from">
+      </div>
+      <div class="field">
+        <label for="f-notes">Tell us about it</label>
+        <textarea id="f-notes" name="notes" placeholder="What is it? Where did you find it? Why does it matter?" required></textarea>
+      </div>
+      <div class="field" style="display:flex;gap:10px;align-items:flex-start">
+        <input id="f-consent" name="consent" type="checkbox" value="yes" style="width:auto;margin-top:4px" required>
+        <label for="f-consent" style="font-weight:400;font-size:.86rem">I have the right to share this material, and I am happy for Rare to publish it with credit.</label>
+      </div>
+      <div>
+        <button class="btn" type="submit">Send my submission</button>
+        <a class="btn ghost" href="mailto:samratbarman1013@gmail.com" style="margin-left:8px">Or email us directly</a>
+      </div>
+      <p class="small" id="form-status" role="status"></p>
+    </form>
+
+    <h2>Frequently asked</h2>
+    <p><b>Who runs Rare?</b> Rare is run by its founder, Samrat Barman, with contributions from readers. Reach out any time at <a href="mailto:samratbarman1013@gmail.com">samratbarman1013@gmail.com</a> or on WhatsApp at <a href="https://wa.me/919933025348" target="_blank" rel="noopener">+91 9933025348</a>.</p>
+    <p><b>Does it cost anything?</b> No. Reading and contributing are both free.</p>
+    <p><b>What belongs here?</b> Anything rare and shareable — with a clear description. We do not host material we do not have the right to share.</p>
+  </main>
+
+  <aside class="sidebar">
+    <div class="side-box">
+      <h3>Contact the founder</h3>
+      <p class="small">Connect directly — questions, contributions and corrections all welcome.</p>
+      <p><a class="mail" href="mailto:samratbarman1013@gmail.com">&#9993; samratbarman1013@gmail.com</a></p>
+      <p><a class="wa" href="https://wa.me/919933025348" target="_blank" rel="noopener">&#128172; WhatsApp +91 9933025348</a></p>
+    </div>
+    <div class="side-box"><h3>Jump to</h3><ul>
+      <li><a href="#submit">Submit a rare find</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="search.html">Search the archive</a></li>
+    </ul></div>
+  </aside>
+</div>
+<footer class="site-footer" id="site-footer"></footer>
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var S = window.RARE_SITE;
+  var form = document.getElementById("submit-form");
+  var status = document.getElementById("form-status");
+  var configured = S.formspree && S.formspree.indexOf("YOUR_FORM_ID") === -1;
+  if (configured) form.setAttribute("action", S.formspree);
+
+  form.addEventListener("submit", function (e) {
+    if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); return; }
+    if (configured) {
+      status.textContent = "Sending\u2026";
+      return; // let Formspree handle it
+    }
+    // Fallback: open the visitor's mail app with everything filled in.
+    e.preventDefault();
+    var g = function (id) { return encodeURIComponent((document.getElementById(id).value || "").trim()); };
+    var subject = "Rare submission: " + (document.getElementById("f-title").value || "new find");
+    var body =
+      "Name: " + document.getElementById("f-name").value + "\n" +
+      "Email: " + document.getElementById("f-email").value + "\n" +
+      "Type: " + document.getElementById("f-type").value + "\n" +
+      "Category: " + document.getElementById("f-cat").value + "\n" +
+      "Title: " + document.getElementById("f-title").value + "\n" +
+      "Link/source: " + document.getElementById("f-link").value + "\n\n" +
+      "Notes:\n" + document.getElementById("f-notes").value + "\n";
+    status.textContent = "Opening your email app to send this to " + S.email + "\u2026";
+    window.location.href = "mailto:" + S.email + "?subject=" + subject + "&body=" + encodeURIComponent(body);
+  });
+});
+</script>
+</body>
+</html>
