@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rare — a community archive of rare photos, videos &amp; notes</title>
-<meta name="description" content="Rare — a community archive of rare photos, videos and notes, plus the Other Side Collection. Scroll sideways between pages.">
+<meta name="description" content="Rare — browse by section, category and filter, or search directly. Plus the Other Side Collection.">
 <link rel="icon" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23b32424%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237a1f7a%22/%3E%0A%20%20%3C/linearGradient%3E%3C/defs%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Ctext%20x%3D%2232%22%20y%3D%2245%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2240%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%3ER%3C/text%3E%0A%3C/svg%3E%0A" type="image/svg+xml">
 <style>
 /* Rare — clean, Wikipedia-like light theme */
@@ -326,6 +326,32 @@ body.shell #site-header{flex:0 0 auto;z-index:60}
   .track{scroll-behavior:auto}
 }
 
+/* tier-1 About link */
+.about-link{padding:8px 16px;border:1px solid var(--border);border-radius:4px;font-size:.9rem;color:var(--text);white-space:nowrap}
+.about-link:hover{border-color:var(--link);color:var(--link);text-decoration:none}
+.about-link.active{background:var(--rare-soft);border-color:var(--rare);color:var(--rare);font-weight:600}
+
+/* starred markers */
+.card .star{position:absolute;top:8px;right:8px;color:#ffcc33;font-size:1.05rem;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.star-inline{color:#b8860b;font-size:.8rem;margin-left:8px}
+
+/* automatic section/category tags on an entry */
+.auto-tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 12px}
+.atag{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.browse-cta{border:1px solid var(--link);background:#fff;color:var(--link);border-radius:999px;padding:4px 12px;font-size:.8rem;font-family:inherit;cursor:pointer}
+.browse-cta:hover{background:var(--link);color:#fff}
+
+/* section > category > filter bar */
+.browse-bar{border:1px solid var(--border);border-radius:8px;background:var(--panel);padding:12px 14px;margin:8px 0 14px;display:flex;flex-direction:column;gap:10px}
+.bb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bb-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);min-width:60px}
+.bb-section{font-weight:600;font-family:var(--serif)}
+.bb-cat,.bb-type{padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:#fff;font-family:inherit;font-size:.88rem;color:var(--text)}
+.fchips{display:flex;gap:8px;flex-wrap:wrap}
+.fchip{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 14px;font-family:inherit;font-size:.85rem;color:var(--text);cursor:pointer}
+.fchip:hover{border-color:var(--link);color:var(--link)}
+.fchip.active{background:var(--link);border-color:var(--link);color:#fff}
+
 </style>
 </head>
 <body class="shell">
@@ -340,6 +366,9 @@ body.shell #site-header{flex:0 0 auto;z-index:60}
    type:    "photo" | "video" | "note"
    category: one of the six real categories (Recent is derived automatically)
    addedHoursAgo: hours since it was published — drives the "Recent (24h)" view
+   starred:  editor's pick (used by the "Starred" filter)
+   popularity: a view-style score (used by the "Popularity" filter)
+   searches: how often it is looked up (used by the "Most searched" filter)
 */
 window.RARE_SITE = {
   brand: "Rare",
@@ -347,7 +376,6 @@ window.RARE_SITE = {
   email: "samratbarman1013@gmail.com",
   whatsapp: "+91 9933025348",
   whatsappLink: "https://wa.me/919933025348",
-  // Formspree endpoint — replace YOUR_FORM_ID after creating a free form at formspree.io
   formspree: "https://formspree.io/f/YOUR_FORM_ID"
 };
 
@@ -363,226 +391,122 @@ window.RARE_CATEGORIES = [
 
 window.RARE_ITEMS = [
   /* ---------------- History ---------------- */
-  {
-    id: "first-photograph",
-    title: "The First Surviving Photograph (1826)",
-    type: "photo", category: "History", addedHoursAgo: 720,
-    place: "France", source: "Community archive",
+  { id: "first-photograph", title: "The First Surviving Photograph (1826)", type: "photo", category: "History",
+    addedHoursAgo: 720, starred: true, popularity: 4200, searches: 610, place: "France", source: "Community archive",
     summary: "Nicéphore Niépce's heliograph — the earliest known photograph that survives to this day.",
-    body: "Taken from an upstairs window, this view of a courtyard is the oldest surviving photograph made with a camera. The exposure is believed to have lasted around eight hours, which is why the light falls on both sides of the buildings. A quiet, hazy plate that marks the birth of photography itself."
-  },
-  {
-    id: "lost-city-map",
-    title: "Rare Map of a Vanished City",
-    type: "photo", category: "History", addedHoursAgo: 340,
-    place: "Unknown", source: "Private collection",
+    body: "Taken from an upstairs window, this view of a courtyard is the oldest surviving photograph made with a camera. The exposure is believed to have lasted around eight hours, which is why the light falls on both sides of the buildings." },
+  { id: "lost-city-map", title: "Rare Map of a Vanished City", type: "photo", category: "History",
+    addedHoursAgo: 340, starred: false, popularity: 1800, searches: 240, place: "Unknown", source: "Private collection",
     summary: "A hand-inked street plan of a settlement that no longer appears on modern maps.",
-    body: "Drawn by an unnamed surveyor, the map shows streets, wells and a market square that vanished after a flood. Historians compare it with satellite imagery to trace where the old roads once ran beneath farmland."
-  },
-  {
-    id: "assembly-notes-1947",
-    title: "Handwritten Notes from a 1947 Assembly",
-    type: "note", category: "History", addedHoursAgo: 500,
-    place: "South Asia", source: "Family donation",
+    body: "Drawn by an unnamed surveyor, the map shows streets, wells and a market square that vanished after a flood. Historians compare it with satellite imagery to trace where the old roads once ran." },
+  { id: "assembly-notes-1947", title: "Handwritten Notes from a 1947 Assembly", type: "note", category: "History",
+    addedHoursAgo: 500, starred: false, popularity: 950, searches: 180, place: "South Asia", source: "Family donation",
     summary: "Pencil notes taken in the gallery of a founding assembly, never before published.",
-    body: "The pages capture short, hurried lines — names, votes, and the odd margin doodle. They offer a small human window onto a very large historical moment, and are reproduced here for study rather than as an official record."
-  },
-  {
-    id: "moon-raw-footage",
-    title: "Raw Reel: The Lunar Landing Tapes",
-    type: "video", category: "History", addedHoursAgo: 96,
-    place: "Space", source: "Archive reel",
+    body: "The pages capture short, hurried lines — names, votes, and the odd margin doodle. They offer a small human window onto a very large historical moment." },
+  { id: "moon-raw-footage", title: "Raw Reel: The Lunar Landing Tapes", type: "video", category: "History",
+    addedHoursAgo: 96, starred: true, popularity: 6800, searches: 890, place: "Space", source: "Archive reel",
     summary: "A restored scan of mission footage, complete with tracking artefacts and leader frames.",
-    body: "This reel preserves the raw look of the original broadcast — scan lines, dropouts and all. The imperfections are part of the story: they are the fingerprints of a signal that crossed 380,000 km to reach a television set."
-  },
+    body: "This reel preserves the raw look of the original broadcast — scan lines, dropouts and all. The imperfections are part of the story." },
 
   /* ---------------- Gaming ---------------- */
-  {
-    id: "unreleased-prototype",
-    title: "Unreleased Prototype Level",
-    type: "video", category: "Gaming", addedHoursAgo: 48,
-    place: "Studio archive", source: "Ex-dev leak (donated)",
+  { id: "unreleased-prototype", title: "Unreleased Prototype Level", type: "video", category: "Gaming",
+    addedHoursAgo: 48, starred: true, popularity: 5400, searches: 720, place: "Studio archive", source: "Ex-dev leak (donated)",
     summary: "A level cut before release, captured from a development cartridge.",
-    body: "The layout is rougher than the shipped game, with placeholder textures and a boss that never made it to the final build. Developers sometimes kept these discs as souvenirs; this one was shared by a former tester."
-  },
-  {
-    id: "beta-screenshots",
-    title: "Beta Build Screenshot Archive",
-    type: "photo", category: "Gaming", addedHoursAgo: 30,
-    place: "Online", source: "Community upload",
+    body: "The layout is rougher than the shipped game, with placeholder textures and a boss that never made it to the final build." },
+  { id: "beta-screenshots", title: "Beta Build Screenshot Archive", type: "photo", category: "Gaming",
+    addedHoursAgo: 30, starred: false, popularity: 2600, searches: 410, place: "Online", source: "Community upload",
     summary: "A set of early screenshots showing a HUD and map that changed dramatically.",
-    body: "Compare the health bar here with the retail version and you can trace a whole design conversation. Early UI often reveals what the team was still arguing about weeks before launch."
-  },
-  {
-    id: "cancelled-rpg-notes",
-    title: "Design Notes of a Cancelled RPG",
-    type: "note", category: "Gaming", addedHoursAgo: 210,
-    place: "Unknown", source: "Notebook scan",
+    body: "Compare the health bar here with the retail version and you can trace a whole design conversation." },
+  { id: "cancelled-rpg-notes", title: "Design Notes of a Cancelled RPG", type: "note", category: "Gaming",
+    addedHoursAgo: 210, starred: false, popularity: 1500, searches: 300, place: "Unknown", source: "Notebook scan",
     summary: "A designer's notebook for a role-playing game that was shelved mid-production.",
-    body: "Quests, faction names and a magic system fill these pages. Several ideas were later recycled into other titles, which is why these notes read like a road map of roads not taken."
-  },
+    body: "Quests, faction names and a magic system fill these pages. Several ideas were later recycled into other titles." },
 
   /* ---------------- News ---------------- */
-  {
-    id: "curious-find-week",
-    title: "A Curious Find Reported This Week",
-    type: "note", category: "News", addedHoursAgo: 5,
-    place: "Regional", source: "Reader tip",
+  { id: "curious-find-week", title: "A Curious Find Reported This Week", type: "note", category: "News",
+    addedHoursAgo: 5, starred: false, popularity: 700, searches: 120, place: "Regional", source: "Reader tip",
     summary: "A small, strange discovery that slipped under the mainstream radar this week.",
-    body: "Rare collects the odd and the overlooked. This entry is a short field report, kept deliberately factual: what was found, where, and why archivists think it matters."
-  },
-  {
-    id: "archive-donation",
-    title: "Rare Archive Donated to a Museum",
-    type: "photo", category: "News", addedHoursAgo: 60,
-    place: "Museum", source: "Press note",
+    body: "Rare collects the odd and the overlooked. This entry is a short field report, kept deliberately factual." },
+  { id: "archive-donation", title: "Rare Archive Donated to a Museum", type: "photo", category: "News",
+    addedHoursAgo: 60, starred: false, popularity: 1100, searches: 160, place: "Museum", source: "Press note",
     summary: "A private collection of negatives has been handed to a public archive.",
-    body: "Donations like this are how rare material survives. The museum plans to digitise the negatives and release low-resolution previews for study, keeping the originals safely stored."
-  },
+    body: "Donations like this are how rare material survives. The museum plans to digitise the negatives and release previews." },
 
   /* ---------------- Music ---------------- */
-  {
-    id: "lost-demo-1974",
-    title: "Lost Studio Demo, 1974",
-    type: "video", category: "Music", addedHoursAgo: 12,
-    place: "Studio", source: "Reel-to-reel transfer",
+  { id: "lost-demo-1974", title: "Lost Studio Demo, 1974", type: "video", category: "Music",
+    addedHoursAgo: 12, starred: true, popularity: 7300, searches: 950, place: "Studio", source: "Reel-to-reel transfer",
     summary: "A single studio take that never reached an official release.",
-    body: "Transferred from a quarter-inch tape, the recording carries the hiss and wobble of its era. It is presented here for listening and research; rights remain with the original holders."
-  },
-  {
-    id: "handwritten-lyrics",
-    title: "Handwritten Lyrics Sheet",
-    type: "photo", category: "Music", addedHoursAgo: 150,
-    place: "Private", source: "Estate scan",
+    body: "Transferred from a quarter-inch tape, the recording carries the hiss and wobble of its era." },
+  { id: "handwritten-lyrics", title: "Handwritten Lyrics Sheet", type: "photo", category: "Music",
+    addedHoursAgo: 150, starred: false, popularity: 3100, searches: 480, place: "Private", source: "Estate scan",
     summary: "Draft lyrics with crossings-out that never made the final cut.",
-    body: "The deletions are the interesting part — they show a line being found and then abandoned. Sometimes a whole verse is struck through in favour of one better word."
-  },
-  {
-    id: "bootleg-notes",
-    title: "Concert Bootleg Notes",
-    type: "note", category: "Music", addedHoursAgo: 400,
-    place: "Live", source: "Fan journal",
+    body: "The deletions are the interesting part — they show a line being found and then abandoned." },
+  { id: "bootleg-notes", title: "Concert Bootleg Notes", type: "note", category: "Music",
+    addedHoursAgo: 400, starred: false, popularity: 1300, searches: 210, place: "Live", source: "Fan journal",
     summary: "A fan's written account of a legendary live show, page by page.",
-    body: "Before phones, the only souvenir of a concert was memory and a notebook. This journal records setlists, stage banter and the odd backstage detail in careful handwriting."
-  },
+    body: "Before phones, the only souvenir of a concert was memory and a notebook." },
 
   /* ---------------- Movie ---------------- */
-  {
-    id: "deleted-scene",
-    title: "Deleted Scene from a Classic",
-    type: "video", category: "Movie", addedHoursAgo: 20,
-    place: "Studio vault", source: "Workprint",
+  { id: "deleted-scene", title: "Deleted Scene from a Classic", type: "video", category: "Movie",
+    addedHoursAgo: 20, starred: true, popularity: 6100, searches: 800, place: "Studio vault", source: "Workprint",
     summary: "A scene removed in the edit, recovered from a rough workprint.",
-    body: "Workprints are precious because they preserve what the final cut threw away. This sequence explains a gap that viewers have argued about for decades."
-  },
-  {
-    id: "concept-poster",
-    title: "Original Concept Poster",
-    type: "photo", category: "Movie", addedHoursAgo: 88,
-    place: "Design studio", source: "Artist portfolio",
+    body: "Workprints are precious because they preserve what the final cut threw away." },
+  { id: "concept-poster", title: "Original Concept Poster", type: "photo", category: "Movie",
+    addedHoursAgo: 88, starred: false, popularity: 2400, searches: 350, place: "Design studio", source: "Artist portfolio",
     summary: "An early poster concept that was replaced before the marketing campaign.",
-    body: "The composition is bolder and stranger than the released one-panel. Concept art like this shows the version of a film that existed in everyone's head before the posters went to print."
-  },
-  {
-    id: "shot-list",
-    title: "Director's Handwritten Shot List",
-    type: "note", category: "Movie", addedHoursAgo: 260,
-    place: "Set", source: "Crew donation",
+    body: "The composition is bolder and stranger than the released one-panel." },
+  { id: "shot-list", title: "Director's Handwritten Shot List", type: "note", category: "Movie",
+    addedHoursAgo: 260, starred: false, popularity: 1600, searches: 260, place: "Set", source: "Crew donation",
     summary: "A day-by-day shot list in the director's own hand.",
-    body: "Numbers, lens notes and small arrows crowd the margins. It is the practical machinery behind a famous sequence — less glamorous, more revealing."
-  },
+    body: "Numbers, lens notes and small arrows crowd the margins. It is the practical machinery behind a famous sequence." },
 
   /* ---------------- Planned for further ---------------- */
-  {
-    id: "planned-games-archive",
-    title: "Rare Video Games Archive",
-    type: "note", category: "Planned", addedHoursAgo: 200,
-    place: "Rare (planned)", source: "Roadmap",
+  { id: "planned-games-archive", title: "Rare Video Games Archive", type: "note", category: "Planned",
+    addedHoursAgo: 200, starred: false, popularity: 900, searches: 140, place: "Rare (planned)", source: "Roadmap",
     summary: "Planned: a searchable catalogue of prototypes, manuals and box art.",
-    body: "We are gathering donated scans and safe, legal captures. If you hold a prototype, a manual or a piece of box art, get in touch — nothing is published without permission."
-  },
-  {
-    id: "planned-radio",
-    title: "Vintage Radio Broadcasts",
-    type: "note", category: "Planned", addedHoursAgo: 220,
-    place: "Rare (planned)", source: "Roadmap",
+    body: "We are gathering donated scans and safe, legal captures. Nothing is published without permission." },
+  { id: "planned-radio", title: "Vintage Radio Broadcasts", type: "note", category: "Planned",
+    addedHoursAgo: 220, starred: false, popularity: 800, searches: 130, place: "Rare (planned)", source: "Roadmap",
     summary: "Planned: restored audio from early radio, with transcripts.",
-    body: "Radio is fragile — discs crack, tapes shed. The plan is to publish restored excerpts alongside transcripts so the sound survives even where the recording does not."
-  },
-  {
-    id: "planned-maps",
-    title: "Lost Maps Project",
-    type: "note", category: "Planned", addedHoursAgo: 240,
-    place: "Rare (planned)", source: "Roadmap",
+    body: "Radio is fragile — discs crack, tapes shed. The plan is to publish restored excerpts alongside transcripts." },
+  { id: "planned-maps", title: "Lost Maps Project", type: "note", category: "Planned",
+    addedHoursAgo: 240, starred: false, popularity: 850, searches: 150, place: "Rare (planned)", source: "Roadmap",
     summary: "Planned: a growing collection of vanished streets and old survey maps.",
-    body: "Contributors send in scans of old maps; we georeference what we can and publish them for anyone tracing a family street or an old boundary."
-  },
+    body: "Contributors send in scans of old maps; we georeference what we can and publish them." },
 
   /* ---------------- More recent finds ---------------- */
-  {
-    id: "glass-slide",
-    title: "A Glass Slide Found in an Attic",
-    type: "photo", category: "History", addedHoursAgo: 2,
-    place: "Attic", source: "Reader upload",
+  { id: "glass-slide", title: "A Glass Slide Found in an Attic", type: "photo", category: "History",
+    addedHoursAgo: 2, starred: true, popularity: 3600, searches: 520, place: "Attic", source: "Reader upload",
     summary: "A hand-tinted lantern slide, rediscovered in a box of family papers.",
-    body: "Lantern slides were projected for audiences before cinema. This one is tinted by hand, and the colours — though faded — hint at how vivid the original show must have been."
-  },
-  {
-    id: "speedrun-tape",
-    title: "A Forgotten Speedrun VHS",
-    type: "video", category: "Gaming", addedHoursAgo: 8,
-    place: "Basement", source: "Tape transfer",
+    body: "Lantern slides were projected for audiences before cinema. This one is tinted by hand." },
+  { id: "speedrun-tape", title: "A Forgotten Speedrun VHS", type: "video", category: "Gaming",
+    addedHoursAgo: 8, starred: false, popularity: 2900, searches: 430, place: "Basement", source: "Tape transfer",
     summary: "A home-recorded tape of a record attempt from the 1990s.",
-    body: "Recorded off a television with a camcorder, the tape is grainy and the audio warbles. It is still a genuine record of play long before streaming made every run visible."
-  },
-  {
-    id: "field-recording",
-    title: "Field Recording of a Vanished Sound",
-    type: "note", category: "Music", addedHoursAgo: 18,
-    place: "Street", source: "Contributor",
+    body: "Recorded off a television with a camcorder, the tape is grainy and the audio warbles." },
+  { id: "field-recording", title: "Field Recording of a Vanished Sound", type: "note", category: "Music",
+    addedHoursAgo: 18, starred: false, popularity: 1200, searches: 190, place: "Street", source: "Contributor",
     summary: "A short note about a street sound that no longer exists anywhere.",
-    body: "Some things are rare because they are gone. This entry pairs a written description with a time and place, so the sound can at least be remembered accurately."
-  },
-  {
-    id: "prototype-cart",
-    title: "Prototype Cartridge Photographed",
-    type: "photo", category: "Gaming", addedHoursAgo: 42,
-    place: "Collection", source: "Owner photo",
+    body: "Some things are rare because they are gone. This entry pairs a written description with a time and place." },
+  { id: "prototype-cart", title: "Prototype Cartridge Photographed", type: "photo", category: "Gaming",
+    addedHoursAgo: 42, starred: false, popularity: 2100, searches: 330, place: "Collection", source: "Owner photo",
     summary: "A never-released cartridge, photographed before it goes for preservation.",
-    body: "Labels on prototypes were often handwritten, and this one is no exception. The owner is arranging a safe dump so the data outlives the plastic."
-  },
-  {
-    id: "newsreel-scan",
-    title: "Newsreel Scan, Reel 3",
-    type: "video", category: "News", addedHoursAgo: 130,
-    place: "Archive", source: "Film scan",
+    body: "Labels on prototypes were often handwritten, and this one is no exception." },
+  { id: "newsreel-scan", title: "Newsreel Scan, Reel 3", type: "video", category: "News",
+    addedHoursAgo: 130, starred: false, popularity: 1700, searches: 250, place: "Archive", source: "Film scan",
     summary: "A surviving newsreel reel, scanned frame by frame.",
-    body: "Newsreels were the cinema's newspaper. This reel covers a week of ordinary events, and its ordinariness is exactly what makes it valuable now."
-  },
-  {
-    id: "screening-notes",
-    title: "Notes from a Private Screening",
-    type: "note", category: "Movie", addedHoursAgo: 300,
-    place: "Screening room", source: "Guest notes",
+    body: "Newsreels were the cinema's newspaper. This reel covers a week of ordinary events." },
+  { id: "screening-notes", title: "Notes from a Private Screening", type: "note", category: "Movie",
+    addedHoursAgo: 300, starred: false, popularity: 1400, searches: 200, place: "Screening room", source: "Guest notes",
     summary: "A viewer's notes jotted during a test screening.",
-    body: "Test-screening notes shaped final cuts. These pages record laughter, silences and a question about an ending that was later changed."
-  },
-  {
-    id: "demo-sheet-music",
-    title: "Demo Sheet Music, Unsigned",
-    type: "photo", category: "Music", addedHoursAgo: 90,
-    place: "Unknown", source: "Paper archive",
+    body: "Test-screening notes shaped final cuts. These pages record laughter, silences and a question about an ending." },
+  { id: "demo-sheet-music", title: "Demo Sheet Music, Unsigned", type: "photo", category: "Music",
+    addedHoursAgo: 90, starred: false, popularity: 2000, searches: 310, place: "Unknown", source: "Paper archive",
     summary: "Loose manuscript pages with no composer's name attached.",
-    body: "Attribution puzzles are common in paper archives. The melody is intact; the author is not. Sometimes the community solves these — sometimes the mystery is the point."
-  },
-  {
-    id: "planned-documents",
-    title: "Family Document Rescue",
-    type: "note", category: "Planned", addedHoursAgo: 260,
-    place: "Rare (planned)", source: "Roadmap",
+    body: "Attribution puzzles are common in paper archives. The melody is intact; the author is not." },
+  { id: "planned-documents", title: "Family Document Rescue", type: "note", category: "Planned",
+    addedHoursAgo: 260, starred: false, popularity: 780, searches: 110, place: "Rare (planned)", source: "Roadmap",
     summary: "Planned: a guide and workspace for scanning fragile family documents safely.",
-    body: "Old paper tears easily. This planned section will walk contributors through safe handling and simple scanning, so more documents survive the trip from the cupboard to the archive."
-  }
+    body: "Old paper tears easily. This planned section will walk contributors through safe handling and simple scanning." }
 ];
 
 </script>
@@ -692,13 +616,20 @@ window.RARE_COLLECTION = {
 
 </script>
 <script>
-/* Rare — horizontal-scroll shell.
-   Tier 1: brand + search   Tier 2: main pages   Tier 3: categories (scrolls sideways)
-   Main pages are horizontal panels (swipe / arrows / keys). Sub-views slide in as sheets. */
+/* Rare — horizontal-scroll shell with a two-way way to find content:
+   (1) pick a section (Images / Videos / Notes) > pick a category > pick a filter
+       (New / Starred / Popularity / Most searched), or
+   (2) search directly from the top bar.
+   Opening any entry applies its own section + category automatically.
+   Tier 1: brand(=Home link) · search · About   Tier 2: sections   Tier 3: categories. */
 (function () {
   var S = window.RARE_SITE, CATS = window.RARE_CATEGORIES, ITEMS = window.RARE_ITEMS;
   var COL = window.RARE_COLLECTION || { platforms: [], youtube: [], wikipedia: { pages: [], images: [] } };
-  var PANELS = [["home", "Home"], ["videos", "Videos"], ["notes", "Notes"], ["images", "Images"], ["about", "About Us"], ["otherside", "Other Side"]];
+  var PANELS = [["home", "Home"], ["images", "Images"], ["videos", "Videos"], ["notes", "Notes"], ["about", "About Us"], ["otherside", "Other Side"]];
+  var SECTION_LABEL = { photo: "Images", video: "Videos", note: "Notes" };
+  var SECTION_SLUG = { photo: "images", video: "videos", note: "notes" };
+  var CAT_KEYS = CATS.map(function (c) { return c.key; });
+  var FILTERS = [["new", "New"], ["starred", "Starred"], ["popularity", "Popularity"], ["searches", "Most searched"]];
 
   /* ---------- helpers ---------- */
   function esc(s) {
@@ -741,19 +672,20 @@ window.RARE_COLLECTION = {
 
   function card(it) {
     return '<article class="card"><a class="thumb" href="#item:' + encodeURIComponent(it.id) + '"><span class="badge ' + it.type + '">' + TYPE_LABEL[it.type] + "</span>" +
+      (it.starred ? '<span class="star">\u2605</span>' : "") +
       '<img loading="lazy" src="' + thumb(it) + '" alt="' + esc(it.title) + '"></a>' +
       '<div class="body"><div class="cat">' + esc(it.category) + "</div>" +
       '<h3><a href="#item:' + encodeURIComponent(it.id) + '">' + esc(it.title) + "</a></h3><p>" + esc(it.summary) + "</p>" +
       '<div class="meta"><span>' + esc(it.source) + "</span><span>" + timeAgo(it.addedHoursAgo) + "</span></div></div></article>";
   }
   function row(items) {
-    if (!items.length) return '<p class="lead">Nothing here yet.</p>';
+    if (!items.length) return '<p class="lead">No entries match this filter yet.</p>';
     return '<div class="row-wrap"><button class="row-arrow l" aria-label="Scroll left">\u2039</button>' +
       '<div class="row">' + items.map(card).join("") + "</div>" +
       '<button class="row-arrow r" aria-label="Scroll right">\u203a</button></div>';
   }
   function grid(items) {
-    if (!items.length) return '<p class="lead">Nothing here yet. Try another search.</p>';
+    if (!items.length) return '<p class="lead">No entries match this filter yet.</p>';
     return '<div class="grid">' + items.map(card).join("") + "</div>";
   }
   function platformCard(p) {
@@ -772,22 +704,88 @@ window.RARE_COLLECTION = {
   }
   function linkCard(x) { return '<a class="link-card" href="' + x.url + '" target="_blank" rel="noopener"><b>' + esc(x.title) + "</b><small>" + esc(x.desc) + '</small><span class="ext">\u2197</span></a>'; }
 
+  /* ---------- the filtering engine ---------- */
+  function listFor(type, category, filter) {
+    var list = ITEMS.slice();
+    if (type) list = list.filter(function (it) { return it.type === type; });
+    if (category === "Recent") list = list.filter(isRecent);
+    else if (category && category !== "All") list = list.filter(function (it) { return it.category === category; });
+    if (filter === "starred") list = list.filter(function (it) { return it.starred; });
+    if (filter === "popularity") list.sort(function (a, b) { return b.popularity - a.popularity; });
+    else if (filter === "searches") list.sort(function (a, b) { return b.searches - a.searches; });
+    else list.sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
+    return list;
+  }
+  function toolbar(type, category, filter, opts) {
+    opts = opts || {};
+    var catOpts = ['<option value="All"' + (category === "All" ? " selected" : "") + ">All categories</option>"]
+      .concat(CAT_KEYS.map(function (k) { return '<option value="' + k + '"' + (category === k ? " selected" : "") + ">" + k + "</option>"; })).join("");
+    var sec;
+    if (opts.sectionSelect) {
+      var so = [["", "All sections"], ["photo", "Images"], ["video", "Videos"], ["note", "Notes"]];
+      sec = '<select class="bb-type">' + so.map(function (o) { return '<option value="' + o[0] + '"' + ((type || "") === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select>";
+    } else {
+      sec = '<span class="bb-section">' + (type ? SECTION_LABEL[type] : "All") + "</span>";
+    }
+    var chips = FILTERS.map(function (f) { return '<button type="button" class="fchip' + (filter === f[0] ? " active" : "") + '" data-filter="' + f[0] + '">' + f[1] + "</button>"; }).join("");
+    return '<div class="browse-bar" data-type="' + (type || "") + '">' +
+      '<div class="bb-row"><span class="bb-label">Section</span>' + sec +
+      '<span class="bb-label">Category</span><select class="bb-cat">' + catOpts + "</select></div>" +
+      '<div class="bb-row"><span class="bb-label">Filter</span><span class="fchips">' + chips + "</span></div></div>" +
+      '<div class="browse-results"></div>';
+  }
+  function renderBrowse(bar) {
+    var wrap = bar.parentNode;
+    var res = wrap.querySelector(".browse-results");
+    if (!res) return;
+    var typeSel = bar.querySelector(".bb-type");
+    var type = typeSel ? typeSel.value : (bar.getAttribute("data-type") || "");
+    var cat = bar.querySelector(".bb-cat").value;
+    var chip = bar.querySelector(".fchip.active");
+    var filter = chip ? chip.getAttribute("data-filter") : "new";
+    var list = listFor(type, cat, filter);
+    var bits = [];
+    if (type) bits.push(SECTION_LABEL[type]);
+    if (cat && cat !== "All") bits.push(cat);
+    var label = bits.length ? bits.join(" \u00b7 ") : "Everything";
+    res.innerHTML = '<p class="tagline">' + esc(label) + " \u2014 <b>" + list.length + "</b> entr" + (list.length === 1 ? "y" : "ies") + "</p>" + row(list);
+  }
+  function wireBrowse(scope) {
+    var bars = (scope || document).querySelectorAll(".browse-bar");
+    for (var i = 0; i < bars.length; i++) {
+      (function (bar) {
+        var cat = bar.querySelector(".bb-cat");
+        var typeSel = bar.querySelector(".bb-type");
+        if (cat) cat.addEventListener("change", function () { renderBrowse(bar); });
+        if (typeSel) typeSel.addEventListener("change", function () { renderBrowse(bar); });
+        var chips = bar.querySelectorAll(".fchip");
+        for (var c = 0; c < chips.length; c++) {
+          chips[c].addEventListener("click", function () {
+            var all = bar.querySelectorAll(".fchip");
+            for (var k = 0; k < all.length; k++) all[k].classList.remove("active");
+            this.classList.add("active");
+            renderBrowse(bar);
+          });
+        }
+        renderBrowse(bar);
+      })(bars[i]);
+    }
+  }
+
   /* ---------- three-tier header ---------- */
-  function headerHTML(active) {
-    var tier2 = PANELS.map(function (p) {
-      return '<a href="#' + p[0] + '" data-panel="' + p[0] + '"' + (active === p[0] ? ' class="active"' : "") + ">" + p[1] + "</a>";
-    }).join("");
-    var tier3 = CATS.map(function (c) {
-      return '<a class="chip" href="#cat:' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a>";
-    }).join("");
+  function headerHTML(activePanel) {
+    var tier2 = [["images", "Images"], ["videos", "Videos"], ["notes", "Notes"], ["otherside", "Other Side"]]
+      .map(function (p) { return '<a href="#' + p[0] + '" data-panel="' + p[0] + '"' + (activePanel === p[0] ? ' class="active"' : "") + ">" + p[1] + "</a>"; }).join("");
+    var tier3 = CATS.map(function (c) { return '<a class="chip" href="#cat:' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a>"; }).join("");
     return '<div class="wrap">' +
-      /* tier 1: web name + search */
-      '<div class="tier1"><a class="brand" href="#home"><span class="brand-mark">R</span><span>Rare<small>community archive</small></span></a>' +
+      /* tier 1: brand (=Home link) · search · About */
+      '<div class="tier1"><a class="brand" href="#home" title="Home"><span class="brand-mark">R</span><span>Rare<small>community archive</small></span></a>' +
       '<form class="search-form" id="search-form" role="search" autocomplete="off">' +
       '<input type="search" id="global-search" placeholder="Search rare photos, videos and notes\u2026" aria-label="Search Rare">' +
-      '<button type="submit">Search</button><div class="suggest" id="suggest" role="listbox"></div></form></div>' +
-      /* tier 2: main pages */
-      '<nav class="tier2" aria-label="Pages"><span class="tier-label">Pages</span>' + tier2 + "</nav>" +
+      '<button type="submit">Search</button><div class="suggest" id="suggest" role="listbox"></div></form>' +
+      '<a class="about-link' + (activePanel === "about" ? " active" : "") + '" href="#about" data-panel="about">About</a></div>' +
+      /* tier 2: sections */
+      '<nav class="tier2" aria-label="Sections"><span class="tier-label">Sections</span>' + tier2 + "</nav>" +
       /* tier 3: categories */
       '<nav class="tier3" aria-label="Categories"><span class="tier-label">Categories</span>' +
       '<button class="strip-nav" id="strip-l" aria-label="Scroll categories left">\u2039</button>' +
@@ -797,36 +795,38 @@ window.RARE_COLLECTION = {
 
   /* ---------- panels ---------- */
   function sidebar() {
-    return '<aside class="sidebar"><div class="side-box"><h3>What is Rare?</h3><p class="small">A volunteer-run archive of photographs, footage and notes that are hard to find, explained for newcomers.</p></div>' +
+    return '<aside class="sidebar"><div class="side-box"><h3>Find content</h3><p class="small">Pick a <b>section</b>, a <b>category</b> and a <b>filter</b> (New, Starred, Popularity, Most searched) \u2014 or search directly from the top bar.</p></div>' +
       '<div class="side-box"><h3>Contribute</h3><p class="small">Anyone can add to Rare. Send a photo, a video link or notes.</p><p><a class="btn" href="#about" style="padding:8px 16px;font-size:.85rem">Submit a rare find</a></p></div>' +
       '<div class="side-box"><h3>Other Side</h3><ul><li><a href="#open:youtube">YouTube \u2014 10 rare videos</a></li><li><a href="#open:wikipedia">Wikipedia \u2014 pages &amp; images</a></li><li><a href="#otherside">All platforms</a></li></ul></div>' +
       '<div class="side-box"><h3>Contact</h3><ul><li>\u2709 <a href="mailto:' + S.email + '">' + esc(S.email) + '</a></li><li>\uD83D\uDCAC <a href="' + S.whatsappLink + '" target="_blank" rel="noopener">WhatsApp ' + esc(S.whatsapp) + "</a></li></ul></div></aside>";
   }
   function pHome() {
-    var recent = ITEMS.filter(isRecent).sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
+    var recent = listFor("", "Recent", "new");
     var latest = ITEMS.slice().sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; }).slice(0, 8);
+    var starred = ITEMS.filter(function (i) { return i.starred; });
     function n(f) { return ITEMS.filter(f).length; }
     var cats = CATS.map(function (c) {
       var count = (c.key === "Recent") ? n(isRecent) : n(function (x) { return x.category === c.key; });
       return '<a class="card" style="text-decoration:none" href="#cat:' + encodeURIComponent(c.key) + '"><div class="body"><div class="cat">Category</div><h3>' + c.key + "</h3><p>" + c.blurb + '</p><div class="meta"><span>' + count + " entr" + (count === 1 ? "y" : "ies") + "</span><span>Open &rarr;</span></div></div></a>";
     }).join("");
     return '<div class="wrap"><section class="hero"><div class="kicker">Community archive</div><h1>Rare</h1>' +
-      '<p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Photos, videos and notes that deserve to survive. Like Wikipedia, <b>anyone can contribute</b>.</p>' +
-      '<div class="hero-actions"><a class="btn" href="#videos">Explore the archive</a><a class="btn ghost" href="#about">Submit a rare find</a><a class="btn ghost" href="#open:search">Search</a></div>' +
+      '<p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Find things two ways: browse by <b>section \u203a category \u203a filter</b>, or <b>search</b> directly. Like Wikipedia, anyone can contribute.</p>' +
+      '<div class="hero-actions"><a class="btn" href="#images">Browse the archive</a><a class="btn ghost" href="#about">Submit a rare find</a><a class="btn ghost" href="#open:search">Search</a></div>' +
       '<p class="scroll-hint" style="margin-top:14px">\u2190 Swipe or scroll sideways to move between pages \u2192</p>' +
-      '<div class="stat-row"><div class="stat"><b>' + ITEMS.length + '</b><span>Entries</span></div><div class="stat"><b>' + n(function (x) { return x.type === "photo"; }) + '</b><span>Rare photos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "video"; }) + '</b><span>Rare videos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "note"; }) + '</b><span>Rare notes</span></div><div class="stat"><b>' + CATS.length + '</b><span>Categories</span></div></div></section></div>' +
+      '<div class="stat-row"><div class="stat"><b>' + ITEMS.length + '</b><span>Entries</span></div><div class="stat"><b>' + n(function (x) { return x.type === "photo"; }) + '</b><span>Rare photos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "video"; }) + '</b><span>Rare videos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "note"; }) + '</b><span>Rare notes</span></div><div class="stat"><b>' + starred.length + '</b><span>Starred</span></div></div></section></div>' +
       '<div class="wrap layout"><main>' +
       '<div class="section-head"><h2>Recent \u2014 last 24 hours</h2><a class="more" href="#cat:Recent">View all recent &rarr;</a></div>' + row(recent) +
-      '<div class="section-head"><h2>Latest additions</h2><span class="scroll-hint">scroll \u2192</span></div>' + row(latest) +
+      '<div class="section-head"><h2>Starred picks</h2><span class="scroll-hint">scroll \u2192</span></div>' + row(starred) +
+      '<div class="section-head"><h2>Most popular</h2><span class="scroll-hint">scroll \u2192</span></div>' + row(listFor("", "All", "popularity").slice(0, 8)) +
       '<div class="section-head"><h2>Browse by category</h2><span class="scroll-hint">scroll \u2192</span></div><div class="row-wrap"><button class="row-arrow l">\u2039</button><div class="row">' + cats + '</div><button class="row-arrow r">\u203a</button></div>' +
       '<h2>Other Side Collection</h2><section class="collection-hero"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Other%20Side%20Collection%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23b32424%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235b1f9e%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22h%22%20cx%3D%220.5%22%20cy%3D%220.45%22%20r%3D%220.65%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232b2f4a%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230b0d18%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2221%22%20fill%3D%22url%28%23h%29%22/%3E%0A%20%20%3Cellipse%20cx%3D%2232%22%20cy%3D%2232%22%20rx%3D%2227%22%20ry%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.6%22%20stroke-width%3D%222%22%20transform%3D%22rotate%28-22%2032%2032%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2251%22%20cy%3D%2219%22%20r%3D%223.4%22%20fill%3D%22%23ffd166%22/%3E%0A%20%20%3Ccircle%20cx%3D%2213%22%20cy%3D%2245%22%20r%3D%222.2%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.85%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%224.2%22%20fill%3D%22%23ffffff%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%221.7%22%20fill%3D%22%23b32424%22/%3E%0A%3C/svg%3E%0A" alt="" onerror="this.style.display=\'none\'"><div><h1 style="font-size:1.5rem">Other Side Collection</h1><p class="lead" style="margin:0 0 12px">10 rare YouTube videos, Wikipedia pages and images, and links to Instagram, Facebook and the Internet Archive.</p><a class="btn" href="#otherside">Open the Other Side &rarr;</a></div></section>' +
       "</main>" + sidebar() + "</div>";
   }
-  function pType(type, title, kicker, lead) {
-    var list = ITEMS.filter(function (it) { return it.type === type; }).sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
+  function pSection(type, title, kicker, lead) {
     return '<div class="wrap layout"><main><div class="panel-head"><div><div class="panel-kicker">' + kicker + '</div><h1 style="border:none;margin:0">' + title + "</h1></div>" +
-      '<span class="scroll-hint">scroll sideways \u2192</span></div><p class="lead">' + lead + '</p><p class="small"><b>' + list.length + "</b> entries \u2014 scroll the row to browse.</p>" + row(list) +
-      "<h2>All entries</h2>" + grid(list) + "</main>" + sidebar() + "</div>";
+      '<span class="scroll-hint">scroll sideways \u2192</span></div><p class="lead">' + lead + "</p>" +
+      '<div class="browse-wrap">' + toolbar(type, "All", "new", {}) + "</div>" +
+      "</main>" + sidebar() + "</div>";
   }
   function pAbout() {
     return '<div class="wrap layout"><main><div class="panel-kicker">About</div><h1>About Us</h1>' +
@@ -871,6 +871,15 @@ window.RARE_COLLECTION = {
     var b = document.getElementById("sheet-back");
     if (b) b.addEventListener("click", closeSheet);
     wireRows(sheet);
+    wireBrowse(sheet);
+    var ctas = sheet.querySelectorAll(".browse-cta");
+    for (var i = 0; i < ctas.length; i++) {
+      (function (btn) {
+        btn.addEventListener("click", function () {
+          openBrowse(btn.getAttribute("data-type") || "", btn.getAttribute("data-cat") || "All", "new");
+        });
+      })(ctas[i]);
+    }
   }
   function closeSheet() { sheet.classList.remove("open"); sheet.innerHTML = ""; }
 
@@ -881,23 +890,33 @@ window.RARE_COLLECTION = {
     if (it.type === "photo") media = '<figure class="detail-figure"><img src="' + thumb(it) + '" alt="' + esc(it.title) + '"><figcaption>' + esc(it.title) + " \u00b7 " + esc(it.source) + "</figcaption></figure>";
     else if (it.type === "video") media = '<figure class="detail-figure"><div class="video-frame"><div class="play">\u25B6</div></div><figcaption>Video entry \u00b7 placeholder player.</figcaption></figure>';
     var rel = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 6);
+    /* automatic section + category applied to this entry */
     openSheet(it.title,
-      '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + TYPE_LABEL[it.type] + "</span></div>" +
+      '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + TYPE_LABEL[it.type] + "</span>" +
+      (it.starred ? '<span class="star star-inline">\u2605 Starred</span>' : "") + "</div>" +
+      '<div class="auto-tags"><span class="atag">Section: ' + SECTION_LABEL[it.type] + '</span><span class="atag">Category: ' + esc(it.category) + "</span>" +
+      '<button type="button" class="browse-cta" data-type="' + it.type + '" data-cat="' + esc(it.category) + '">Browse all ' + SECTION_LABEL[it.type] + " \u00b7 " + esc(it.category) + " \u2192</button></div>" +
       '<p class="lead">' + esc(it.summary) + "</p>" + media +
       '<table class="meta-table"><tr><th>Type</th><td>' + TYPE_LABEL[it.type] + "</td></tr><tr><th>Category</th><td>" + esc(it.category) + "</td></tr>" +
-      "<tr><th>Origin</th><td>" + esc(it.place || "\u2014") + "</td></tr><tr><th>Source</th><td>" + esc(it.source) + "</td></tr><tr><th>Added</th><td>" + timeAgo(it.addedHoursAgo) + "</td></tr></table>" +
+      "<tr><th>Origin</th><td>" + esc(it.place || "\u2014") + "</td></tr><tr><th>Source</th><td>" + esc(it.source) + "</td></tr>" +
+      "<tr><th>Popularity</th><td>" + it.popularity + "</td></tr><tr><th>Searches</th><td>" + it.searches + "</td></tr><tr><th>Added</th><td>" + timeAgo(it.addedHoursAgo) + "</td></tr></table>" +
       "<h2>Notes</h2><p>" + esc(it.body) + "</p>" +
       (rel.length ? "<h2>More in " + esc(it.category) + "</h2>" + row(rel) : ""));
   }
+  function openBrowse(type, category, filter) {
+    var title = (type ? SECTION_LABEL[type] : "Everything") + (category && category !== "All" ? " \u00b7 " + category : "");
+    openSheet(title, '<p class="lead">Choose a section, a category and a filter to narrow the archive.</p>' +
+      '<div class="browse-wrap">' + toolbar(type || "", category || "All", filter || "new", { sectionSelect: true }) + "</div>");
+  }
   function openCategory(key) {
     var meta = CATS.filter(function (c) { return c.key === key; })[0] || CATS[0];
-    var list = (key === "Recent") ? ITEMS.filter(isRecent) : ITEMS.filter(function (it) { return it.category === key; });
-    list = list.sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
-    openSheet(meta.key, '<p class="lead">' + esc(meta.blurb) + '</p><p class="small"><b>' + list.length + "</b> entries \u2014 scroll the row \u2192</p>" + row(list) + "<h2>All entries</h2>" + grid(list));
+    openSheet(meta.key, '<p class="lead">' + esc(meta.blurb) + "</p>" +
+      '<div class="browse-wrap">' + toolbar("", meta.key, "new", { sectionSelect: true }) + "</div>");
   }
   function openSearch(q) {
     var res = search(q);
     openSheet("Search the archive",
+      '<p class="lead">Direct search across every section and category.</p>' +
       '<form class="search-form" id="sheet-search" role="search" style="max-width:720px;margin:0 0 14px"><input type="search" id="sheet-q" value="' + esc(q) + '" placeholder="Search rare photos, videos and notes\u2026"><button type="submit">Search</button></form>' +
       '<p class="tagline">' + (q ? "<b>" + res.length + "</b> result" + (res.length === 1 ? "" : "s") + " for \u201c" + esc(q) + "\u201d" : "Type a word \u2014 try \u201cprototype\u201d, \u201cdemo\u201d, \u201cmap\u201d or \u201clost\u201d.") + "</p>" + (q ? grid(res) : ""));
     var f = document.getElementById("sheet-search");
@@ -941,13 +960,13 @@ window.RARE_COLLECTION = {
   function goTo(key) {
     idx = panelIndex(key);
     track.scrollTo({ left: idx * track.clientWidth, behavior: "smooth" });
-    syncNav(idx);
+    syncNav(PANELS[idx][0]);
   }
-  function syncNav(i) {
-    var links = document.querySelectorAll(".tier2 a");
-    for (var k = 0; k < links.length; k++) links[k].classList.toggle("active", k === i);
+  function syncNav(key) {
+    var links = document.querySelectorAll(".tier2 a, .about-link");
+    for (var k = 0; k < links.length; k++) links[k].classList.toggle("active", links[k].getAttribute("data-panel") === key);
     var dots = document.querySelectorAll(".dots button");
-    for (var d = 0; d < dots.length; d++) dots[d].classList.toggle("active", d === i);
+    for (var d = 0; d < dots.length; d++) dots[d].classList.toggle("active", d === panelIndex(key));
   }
   function currentIndex() { return Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); }
 
@@ -956,7 +975,7 @@ window.RARE_COLLECTION = {
     for (var i = 0; i < wraps.length; i++) {
       (function (w) {
         var r = w.querySelector(".row"), l = w.querySelector(".row-arrow.l"), rr = w.querySelector(".row-arrow.r");
-        if (!r) return;
+        if (!r || r.getAttribute("data-wired")) return; r.setAttribute("data-wired", "1");
         if (l) l.addEventListener("click", function () { r.scrollBy({ left: -r.clientWidth * 0.85, behavior: "smooth" }); });
         if (rr) rr.addEventListener("click", function () { r.scrollBy({ left: r.clientWidth * 0.85, behavior: "smooth" }); });
       })(wraps[i]);
@@ -967,7 +986,6 @@ window.RARE_COLLECTION = {
     var sl = document.getElementById("strip-l"), sr = document.getElementById("strip-r");
     if (sl) sl.addEventListener("click", function () { strip.scrollBy({ left: -180, behavior: "smooth" }); });
     if (sr) sr.addEventListener("click", function () { strip.scrollBy({ left: 180, behavior: "smooth" }); });
-
     var form = document.getElementById("search-form"), input = document.getElementById("global-search"), box = document.getElementById("suggest");
     if (form) form.addEventListener("submit", function (e) { e.preventDefault(); openSearch(input.value.trim()); });
     if (input && box) {
@@ -981,7 +999,7 @@ window.RARE_COLLECTION = {
         }).join("");
         box.classList.add("open");
       });
-      document.addEventListener("click", function (e) { if (!form.contains(e.target)) { box.classList.remove("open"); } });
+      document.addEventListener("click", function (e) { if (!form.contains(e.target)) box.classList.remove("open"); });
     }
   }
   function wireAboutForm() {
@@ -1008,6 +1026,7 @@ window.RARE_COLLECTION = {
       if (k === "wikipedia") return openWikipedia();
       if (k === "search") return openSearch("");
       if (k === "otherside") return goTo("otherside");
+      return openBrowse("", "All", "new");
     }
     if (h) { closeSheet(); return goTo(h); }
     closeSheet();
@@ -1018,38 +1037,31 @@ window.RARE_COLLECTION = {
     track = document.getElementById("track");
     sheet = document.getElementById("sheet");
     header.innerHTML = headerHTML("home");
-
     var frag = "";
     frag += '<section class="panel" data-key="home">' + pHome() + "</section>";
-    frag += '<section class="panel" data-key="videos">' + pType("video", "Rare Videos", "Videos", "Footage worth preserving \u2014 deleted scenes, lost demos, unreleased prototypes and newsreels.") + "</section>";
-    frag += '<section class="panel" data-key="notes">' + pType("note", "Rare Notes", "Notes", "Written things that survived by accident \u2014 notebooks, shot lists, lyric drafts and field reports.") + "</section>";
-    frag += '<section class="panel" data-key="images">' + pType("photo", "Rare Photos", "Images", "Photographs that are hard to find and easy to lose \u2014 lantern slides, maps, prototypes and archives.") + "</section>";
+    frag += '<section class="panel" data-key="images">' + pSection("photo", "Rare Photos", "Images", "Photographs that are hard to find and easy to lose \u2014 lantern slides, maps, prototypes and archives.") + "</section>";
+    frag += '<section class="panel" data-key="videos">' + pSection("video", "Rare Videos", "Videos", "Footage worth preserving \u2014 deleted scenes, lost demos, unreleased prototypes and newsreels.") + "</section>";
+    frag += '<section class="panel" data-key="notes">' + pSection("note", "Rare Notes", "Notes", "Written things that survived by accident \u2014 notebooks, shot lists, lyric drafts and field reports.") + "</section>";
     frag += '<section class="panel" data-key="about">' + pAbout() + "</section>";
     frag += '<section class="panel" data-key="otherside">' + pOtherside() + "</section>";
     track.innerHTML = frag;
 
-    /* dots */
     var dots = document.createElement("div");
     dots.className = "dots";
     dots.innerHTML = PANELS.map(function (p, i) { return '<button data-i="' + i + '" aria-label="' + p[1] + '"' + (i === 0 ? ' class="active"' : "") + "></button>"; }).join("");
     document.body.appendChild(dots);
     dots.addEventListener("click", function (e) { if (e.target.dataset.i != null) goTo(PANELS[+e.target.dataset.i][0]); });
 
-    wireHeader();
-    wireRows(document);
-    wireAboutForm();
-    setHeaderHeight();
+    wireHeader(); wireRows(document); wireBrowse(document); wireAboutForm(); setHeaderHeight();
 
     var prev = document.getElementById("arrow-prev"), next = document.getElementById("arrow-next");
     if (prev) prev.addEventListener("click", function () { goTo(PANELS[Math.max(0, currentIndex() - 1)][0]); });
     if (next) next.addEventListener("click", function () { goTo(PANELS[Math.min(PANELS.length - 1, currentIndex() + 1)][0]); });
+    track.addEventListener("scroll", function () { syncNav(PANELS[currentIndex()][0]); }, { passive: true });
 
-    track.addEventListener("scroll", function () { syncNav(currentIndex()); }, { passive: true });
-
-    /* vertical wheel at a panel edge -> horizontal scroll */
     track.addEventListener("wheel", function (e) {
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      var panel = panelsEl()[currentIndex()];
+      var panel = track.querySelectorAll(".panel")[currentIndex()];
       if (!panel) return;
       var atTop = panel.scrollTop <= 1;
       var atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
@@ -1064,16 +1076,11 @@ window.RARE_COLLECTION = {
       if (e.key === "ArrowLeft") goTo(PANELS[Math.max(0, currentIndex() - 1)][0]);
     });
 
-    window.addEventListener("resize", function () {
-      setHeaderHeight();
-      track.scrollTo({ left: currentIndex() * track.clientWidth });
-    });
-
+    window.addEventListener("resize", function () { setHeaderHeight(); track.scrollTo({ left: currentIndex() * track.clientWidth }); });
     window.addEventListener("hashchange", route);
     route();
-    if (!location.hash) syncNav(0);
+    if (!location.hash) syncNav("home");
   }
-  function panelsEl() { return track.querySelectorAll(".panel"); }
   function setHeaderHeight() {
     var h = document.getElementById("site-header").offsetHeight;
     document.documentElement.style.setProperty("--hdr", h + "px");
