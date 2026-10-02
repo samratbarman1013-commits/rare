@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rare — a community archive of rare photos, videos &amp; notes</title>
+<meta name="description" content="Rare is a community archive of rare photos, rare videos and rare notes — across History, Gaming, News, Music, Movie and more. Anyone can contribute.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="home">
+<header class="site-header" id="site-header"></header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="kicker">Community archive</div>
+    <h1>Rare</h1>
+    <p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Photos, videos and notes that deserve to survive — collected, explained and kept open for everyone. Like Wikipedia, <b>anyone can contribute</b>.</p>
+    <div class="hero-actions">
+      <a class="btn" href="#latest">Explore the archive</a>
+      <a class="btn ghost" href="about.html#submit">Submit a rare find</a>
+      <a class="btn ghost" href="search.html">Search</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b id="stat-total">0</b><span>Entries</span></div>
+      <div class="stat"><b id="stat-photos">0</b><span>Rare photos</span></div>
+      <div class="stat"><b id="stat-videos">0</b><span>Rare videos</span></div>
+      <div class="stat"><b id="stat-notes">0</b><span>Rare notes</span></div>
+      <div class="stat"><b id="stat-cats">0</b><span>Categories</span></div>
+    </div>
+  </section>
+</div>
+
+<div class="wrap layout">
+  <main>
+    <div class="section-head">
+      <h2 id="recent">Recent — published in the last 24 hours</h2>
+      <a class="more" href="category.html?cat=Recent">View all recent &rarr;</a>
+    </div>
+    <div id="home-recent"></div>
+
+    <div class="section-head" id="latest">
+      <h2>Latest additions</h2>
+      <a class="more" href="search.html">Search everything &rarr;</a>
+    </div>
+    <div id="home-latest"></div>
+
+    <h2>Browse by category</h2>
+    <p class="tagline">Every entry is filed under one of seven collections. Pick one to explore.</p>
+    <div class="grid" id="home-cats"></div>
+  </main>
+
+  <aside class="sidebar">
+    <div class="side-box">
+      <h3>What is Rare?</h3>
+      <p class="small">Rare is a volunteer-run archive. We collect photographs, footage and written notes that are hard to find, and we explain them so they make sense to a newcomer.</p>
+    </div>
+    <div class="side-box">
+      <h3>Contribute</h3>
+      <p class="small">Anyone can add to Rare. Send a photo, a video link or a set of notes and we will help catalogue it.</p>
+      <p><a class="btn" href="about.html#submit" style="padding:8px 16px;font-size:.85rem">Submit a rare find</a></p>
+    </div>
+    <div class="side-box">
+      <h3>Contact</h3>
+      <ul>
+        <li>&#9993; <a href="mailto:samratbarman1013@gmail.com">samratbarman1013@gmail.com</a></li>
+        <li>&#128172; <a href="https://wa.me/919933025348" target="_blank" rel="noopener">WhatsApp +91 9933025348</a></li>
+      </ul>
+    </div>
+    <div class="side-box">
+      <h3>Quick links</h3>
+      <ul>
+        <li><a href="images.html">Rare Photos</a></li>
+        <li><a href="videos.html">Rare Videos</a></li>
+        <li><a href="notes.html">Rare Notes</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var I = window.RARE_ITEMS, C = window.RARE_CATEGORIES;
+  function n(f){ return I.filter(f).length; }
+  document.getElementById("stat-total").textContent = I.length;
+  document.getElementById("stat-photos").textContent = n(function(x){return x.type==="photo";});
+  document.getElementById("stat-videos").textContent = n(function(x){return x.type==="video";});
+  document.getElementById("stat-notes").textContent = n(function(x){return x.type==="note";});
+  document.getElementById("stat-cats").textContent = C.length;
+  document.getElementById("home-cats").innerHTML = C.map(function(c){
+    var count = (c.key==="Recent") ? n(function(x){return x.addedHoursAgo<=24;})
+      : n(function(x){return x.category===c.key;});
+    return '<a class="card" style="text-decoration:none" href="category.html?cat='+encodeURIComponent(c.key)+'">'+
+      '<div class="body"><div class="cat">Category</div><h3>'+c.key+'</h3>'+
+      '<p>'+c.blurb+'</p><div class="meta"><span>'+count+' entr'+(count===1?'y':'ies')+'</span><span>Explore &rarr;</span></div></div></a>';
+  }).join("");
+});
+</script>
+</body>
+</html>
