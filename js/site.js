@@ -74,6 +74,7 @@
       ["images.html", "Images", "images"],
       ["videos.html", "Videos", "videos"],
       ["notes.html", "Notes", "notes"],
+      ["otherside.html", "Other Side", "otherside"],
       ["about.html", "About Us", "about"]
     ].map(function (n) {
       return '<a href="' + n[0] + '"' + (active === n[2] ? ' class="active"' : "") + ">" + n[1] + "</a>";
@@ -106,6 +107,7 @@
       '<li><a href="images.html">Rare Photos</a></li>' +
       '<li><a href="videos.html">Rare Videos</a></li>' +
       '<li><a href="notes.html">Rare Notes</a></li>' +
+      '<li><a href="otherside.html">Other Side Collection</a></li>' +
       '<li><a href="search.html">Search the archive</a></li></ul></div>' +
       "<div><h4>Categories</h4><ul>" +
       CATS.map(function (c) { return '<li><a href="category.html?cat=' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a></li>"; }).join("") +
@@ -129,6 +131,35 @@
   function grid(items) {
     if (!items.length) return '<p class="lead">Nothing here yet. Try another search or <a href="index.html">browse everything</a>.</p>';
     return '<div class="grid">' + items.map(card).join("") + "</div>";
+  }
+
+  /* ---------- Other Side Collection ---------- */
+  function ytId(url) {
+    var m = String(url).match(/[?&]v=([^&]+)/) || String(url).match(/youtu\.be\/([^?]+)/);
+    return m ? m[1] : "";
+  }
+  function platformCard(p) {
+    var ext = p.external ? ' target="_blank" rel="noopener"' : "";
+    var tag = p.external ? '<span class="ext">\u2197</span>' : "";
+    return '<a class="platform" href="' + p.href + '"' + ext + ' style="--pc:' + (p.color || "#4a5568") + '">' +
+      '<span class="p-icon">' + (p.icon || "\u25CF") + "</span>" +
+      '<span class="p-body"><b>' + esc(p.name) + tag + "</b><small>" + esc(p.desc) + "</small></span></a>";
+  }
+  function videoCard(v) {
+    var id = ytId(v.url);
+    var img = id ? "https://img.youtube.com/vi/" + id + "/hqdefault.jpg" : "";
+    return '<article class="yt-card">' +
+      '<a class="yt-thumb" href="' + v.url + '" target="_blank" rel="noopener">' +
+      (img ? '<img loading="lazy" src="' + img + '" alt="' + esc(v.title) + '">' : "") +
+      '<span class="yt-play">\u25B6</span></a>' +
+      '<div class="yt-body"><div class="cat">' + esc(v.year || "Rare") + "</div>" +
+      "<h3>" + esc(v.title) + "</h3><p>" + esc(v.desc) + "</p>" +
+      '<div class="meta"><span>' + esc(v.channel || "YouTube") + '</span>' +
+      '<a href="' + v.url + '" target="_blank" rel="noopener">Watch \u2197</a></div></div></article>';
+  }
+  function linkCard(x) {
+    return '<a class="link-card" href="' + x.url + '" target="_blank" rel="noopener">' +
+      "<b>" + esc(x.title) + "</b><small>" + esc(x.desc) + '</small><span class="ext">\u2197</span></a>';
   }
 
   /* ---------- search engine ---------- */
@@ -234,6 +265,24 @@
         ? "<b>" + res.length + "</b> result" + (res.length === 1 ? "" : "s") + " for \u201c" + esc(q) + "\u201d"
         : "Type a word above \u2014 try \u201cprototype\u201d, \u201cdemo\u201d, \u201cmap\u201d or \u201clost\u201d.";
       if (out) out.innerHTML = q ? grid(res) : "";
+    }
+
+    if (page === "otherside") {
+      var cg = document.getElementById("collection-grid");
+      if (cg) cg.innerHTML = ((window.RARE_COLLECTION || {}).platforms || []).map(platformCard).join("");
+    }
+    if (page === "youtube") {
+      var yg = document.getElementById("yt-grid");
+      if (yg) yg.innerHTML = ((window.RARE_COLLECTION || {}).youtube || []).map(videoCard).join("");
+      var yc = document.getElementById("yt-count");
+      if (yc) yc.textContent = ((window.RARE_COLLECTION || {}).youtube || []).length;
+    }
+    if (page === "wikipedia") {
+      var W = (window.RARE_COLLECTION || {}).wikipedia || { pages: [], images: [] };
+      var wp = document.getElementById("wiki-pages");
+      if (wp) wp.innerHTML = (W.pages || []).map(linkCard).join("");
+      var wi = document.getElementById("wiki-images");
+      if (wi) wi.innerHTML = (W.images || []).map(linkCard).join("");
     }
 
     if (page === "item") {
