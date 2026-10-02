@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rare — a community archive of rare photos, videos &amp; notes</title>
-<meta name="description" content="Rare — a community archive of rare photos, rare videos and rare notes, plus the Other Side Collection (YouTube, Wikipedia, Instagram, Facebook and more).">
+<meta name="description" content="Rare — a community archive of rare photos, videos and notes, plus the Other Side Collection. Scroll sideways between pages.">
 <link rel="icon" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23b32424%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%237a1f7a%22/%3E%0A%20%20%3C/linearGradient%3E%3C/defs%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Ctext%20x%3D%2232%22%20y%3D%2245%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2240%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%3ER%3C/text%3E%0A%3C/svg%3E%0A" type="image/svg+xml">
 <style>
 /* Rare — clean, Wikipedia-like light theme */
@@ -239,12 +239,101 @@ hr{border:none;border-top:1px solid var(--border-soft);margin:22px 0}
   .collection-hero{flex-direction:column;align-items:flex-start;text-align:left}
 }
 
+/* ================= Horizontal-scroll shell ================= */
+html,body{height:100%}
+body.shell{overflow:hidden;display:flex;flex-direction:column;height:100vh}
+body.shell #site-header{flex:0 0 auto;z-index:60}
+
+/* three-tier header */
+.tier1{display:flex;align-items:center;gap:18px;padding:9px 0}
+.tier2{display:flex;align-items:center;gap:4px;border-top:1px solid var(--border-soft);padding:3px 0}
+.tier3{display:flex;align-items:center;gap:8px;border-top:1px solid var(--border-soft);padding:5px 0}
+.tier-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  flex:0 0 auto;padding-right:6px;border-right:1px solid var(--border-soft);margin-right:4px}
+.tier2 a{padding:7px 13px;font-size:.92rem;color:var(--text);border-radius:3px;white-space:nowrap}
+.tier2 a:hover{background:var(--panel);text-decoration:none}
+.tier2 a.active{background:var(--rare-soft);color:var(--rare);font-weight:600}
+
+/* horizontally scrolling category strip (tier 3) */
+.cat-strip{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
+  -ms-overflow-style:none;margin:0;padding:2px 0}
+.cat-strip::-webkit-scrollbar{height:0}
+.cat-strip .chip{flex:0 0 auto;scroll-snap-align:start}
+.strip-nav{flex:0 0 auto;width:26px;height:26px;border:1px solid var(--border);background:#fff;border-radius:50%;
+  cursor:pointer;color:var(--muted);display:grid;place-items:center;font-size:1rem;line-height:1;padding:0}
+.strip-nav:hover{border-color:var(--link);color:var(--link)}
+
+/* track + panels */
+.track{flex:1 1 auto;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;position:relative;scrollbar-width:none}
+.track::-webkit-scrollbar{height:0}
+.panel{flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;scroll-snap-align:start;
+  scroll-snap-stop:always;padding-bottom:48px;position:relative}
+.panel::-webkit-scrollbar{width:10px}
+.panel::-webkit-scrollbar-thumb{background:#c8ccd1;border-radius:8px;border:3px solid #fff}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.panel-kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--rare);font-weight:600}
+.scroll-hint{font-size:.78rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+
+/* horizontal card rows */
+.row-wrap{position:relative}
+.row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;padding:6px 2px 14px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.row::-webkit-scrollbar{height:8px}
+.row::-webkit-scrollbar-thumb{background:#c8ccd1;border-radius:8px}
+.row .card{flex:0 0 300px;scroll-snap-align:start}
+.row .platform{flex:0 0 250px}
+.row-arrow{position:absolute;top:38%;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);
+  background:#fff;color:var(--text);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:3;
+  display:grid;place-items:center;font-size:1.05rem;line-height:1}
+.row-arrow:hover{border-color:var(--link);color:var(--link)}
+.row-arrow.l{left:-10px}.row-arrow.r{right:-10px}
+
+/* big panel arrows */
+.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:65;width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border);background:rgba(255,255,255,.92);color:var(--text);cursor:pointer;
+  box-shadow:0 3px 12px rgba(0,0,0,.14);display:grid;place-items:center;font-size:1.4rem;line-height:1}
+.nav-arrow:hover{border-color:var(--link);color:var(--link)}
+.nav-arrow.prev{left:12px}.nav-arrow.next{right:12px}
+
+/* progress dots */
+.dots{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:64;display:flex;gap:8px;
+  background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:999px;padding:6px 12px}
+.dots button{width:9px;height:9px;border-radius:50%;border:none;background:#c8ccd1;cursor:pointer;padding:0}
+.dots button.active{background:var(--rare);transform:scale(1.25)}
+
+/* slide-in sheet (overlay) */
+.sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;overflow-y:auto;z-index:70;
+  transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:-10px 0 34px rgba(0,0,0,.16)}
+.sheet.open{transform:none}
+.sheet-bar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);padding:10px 0;z-index:2}
+.sheet-bar .wrap{display:flex;align-items:center;gap:14px}
+.sheet-back{border:1px solid var(--border);background:#fff;border-radius:4px;padding:6px 14px;cursor:pointer;
+  font-family:inherit;font-size:.88rem;color:var(--text)}
+.sheet-back:hover{border-color:var(--link);color:var(--link)}
+
+@media(max-width:900px){
+  .nav-arrow{display:none}
+  .tier2 a{padding:7px 9px;font-size:.85rem}
+}
+@media(max-width:620px){
+  .tier-label{display:none}
+  .row .card{flex:0 0 78%}
+  .row .platform{flex:0 0 78%}
+}
+@media(prefers-reduced-motion:reduce){
+  .sheet{transition:none}
+  .track{scroll-behavior:auto}
+}
+
 </style>
 </head>
-<body>
+<body class="shell">
 <header class="site-header" id="site-header"></header>
-<main id="app"></main>
-<footer class="site-footer" id="site-footer"></footer>
+<div class="track" id="track"></div>
+<button class="nav-arrow prev" id="arrow-prev" aria-label="Previous page">&#8249;</button>
+<button class="nav-arrow next" id="arrow-next" aria-label="Next page">&#8250;</button>
+<div class="sheet" id="sheet"></div>
 <script>
 /* Rare — content data model.
    Anyone contributing adds an entry here (or sends it in via the Submit form).
@@ -603,13 +692,15 @@ window.RARE_COLLECTION = {
 
 </script>
 <script>
-/* Rare — single-file (SPA) engine. Hash routes:
-   #/  #/images  #/videos  #/notes  #/otherside  #/youtube  #/wikipedia  #/about
-   #/category?cat=History   #/search?q=demo   #/item?id=first-photograph            */
+/* Rare — horizontal-scroll shell.
+   Tier 1: brand + search   Tier 2: main pages   Tier 3: categories (scrolls sideways)
+   Main pages are horizontal panels (swipe / arrows / keys). Sub-views slide in as sheets. */
 (function () {
   var S = window.RARE_SITE, CATS = window.RARE_CATEGORIES, ITEMS = window.RARE_ITEMS;
   var COL = window.RARE_COLLECTION || { platforms: [], youtube: [], wikipedia: { pages: [], images: [] } };
+  var PANELS = [["home", "Home"], ["videos", "Videos"], ["notes", "Notes"], ["images", "Images"], ["about", "About Us"], ["otherside", "Other Side"]];
 
+  /* ---------- helpers ---------- */
   function esc(s) {
     return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
       .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -617,109 +708,215 @@ window.RARE_COLLECTION = {
   function timeAgo(h) {
     if (h < 1) return "just now";
     if (h < 24) return h + "h ago";
-    var d = Math.round(h / 24);
-    if (d < 30) return d + "d ago";
-    var m = Math.round(d / 30);
-    if (m < 12) return m + "mo ago";
+    var d = Math.round(h / 24); if (d < 30) return d + "d ago";
+    var m = Math.round(d / 30); if (m < 12) return m + "mo ago";
     return Math.round(m / 12) + "y ago";
   }
   function isRecent(it) { return it.addedHoursAgo <= 24; }
   function byId(id) { for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return ITEMS[i]; return null; }
-
   var CAT_COLOR = { History: "#7a5230", Gaming: "#1f5fbf", News: "#b32424", Music: "#7a1f7a", Movie: "#9a6b00", Planned: "#4a5568" };
   var TYPE_COLOR = { photo: "#0b6e4f", video: "#b32424", note: "#4a5568" };
   var TYPE_LABEL = { photo: "Photo", video: "Video", note: "Note" };
-
-  function wrap(text, max) {
-    var words = String(text).split(/\s+/), lines = [], cur = "";
-    for (var i = 0; i < words.length; i++) {
-      var t = cur ? cur + " " + words[i] : words[i];
-      if (t.length > max && cur) { lines.push(cur); cur = words[i]; } else cur = t;
-    }
-    if (cur) lines.push(cur);
-    return lines.slice(0, 4);
+  function wrapT(text, max) {
+    var w = String(text).split(/\s+/), out = [], cur = "";
+    for (var i = 0; i < w.length; i++) { var t = cur ? cur + " " + w[i] : w[i]; if (t.length > max && cur) { out.push(cur); cur = w[i]; } else cur = t; }
+    if (cur) out.push(cur); return out.slice(0, 4);
   }
   function thumb(it) {
     var base = CAT_COLOR[it.category] || "#4a5568", type = TYPE_COLOR[it.type] || "#4a5568";
-    var lines = wrap(it.title, 20);
+    var lines = wrapT(it.title, 20);
     var tspan = lines.map(function (l, i) { return '<tspan x="40" dy="' + (i === 0 ? 0 : 34) + '">' + esc(l) + "</tspan>"; }).join("");
     var y0 = 150 - (lines.length - 1) * 17;
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400">' +
-      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + base + '"/><stop offset="1" stop-color="#14161c"/></linearGradient>' +
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400"><defs>' +
+      '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + base + '"/><stop offset="1" stop-color="#14161c"/></linearGradient>' +
       '<pattern id="p" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#ffffff" stroke-opacity="0.06"/></pattern></defs>' +
       '<rect width="640" height="400" fill="url(#g)"/><rect width="640" height="400" fill="url(#p)"/>' +
       '<rect x="16" y="16" width="608" height="368" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>' +
       '<text x="40" y="70" fill="#ffffff" fill-opacity="0.85" font-family="Helvetica,Arial,sans-serif" font-size="20" letter-spacing="4">' + esc(it.category.toUpperCase()) + "</text>" +
       '<text x="40" y="' + y0 + '" fill="#ffffff" font-family="Georgia,serif" font-size="30">' + tspan + "</text>" +
-      '<rect x="40" y="330" width="150" height="34" rx="4" fill="' + type + '"/>' +
-      '<text x="115" y="353" fill="#ffffff" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="18" letter-spacing="2">' + esc(TYPE_LABEL[it.type]) + "</text></svg>";
+      '<rect x="40" y="330" width="150" height="34" rx="4" fill="' + type + '"/><text x="115" y="353" fill="#ffffff" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="18" letter-spacing="2">' + esc(TYPE_LABEL[it.type]) + "</text></svg>";
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   }
-  function ytId(url) {
-    var m = String(url).match(/[?&]v=([^&]+)/) || String(url).match(/youtu\.be\/([^?]+)/);
-    return m ? m[1] : "";
-  }
+  function ytId(u) { var m = String(u).match(/[?&]v=([^&]+)/) || String(u).match(/youtu\.be\/([^?]+)/); return m ? m[1] : ""; }
 
   function card(it) {
-    var link = "#/item?id=" + encodeURIComponent(it.id);
-    return '<article class="card"><a class="thumb" href="' + link + '"><span class="badge ' + it.type + '">' + TYPE_LABEL[it.type] + "</span>" +
+    return '<article class="card"><a class="thumb" href="#item:' + encodeURIComponent(it.id) + '"><span class="badge ' + it.type + '">' + TYPE_LABEL[it.type] + "</span>" +
       '<img loading="lazy" src="' + thumb(it) + '" alt="' + esc(it.title) + '"></a>' +
       '<div class="body"><div class="cat">' + esc(it.category) + "</div>" +
-      '<h3><a href="' + link + '">' + esc(it.title) + "</a></h3><p>" + esc(it.summary) + "</p>" +
+      '<h3><a href="#item:' + encodeURIComponent(it.id) + '">' + esc(it.title) + "</a></h3><p>" + esc(it.summary) + "</p>" +
       '<div class="meta"><span>' + esc(it.source) + "</span><span>" + timeAgo(it.addedHoursAgo) + "</span></div></div></article>";
   }
+  function row(items) {
+    if (!items.length) return '<p class="lead">Nothing here yet.</p>';
+    return '<div class="row-wrap"><button class="row-arrow l" aria-label="Scroll left">\u2039</button>' +
+      '<div class="row">' + items.map(card).join("") + "</div>" +
+      '<button class="row-arrow r" aria-label="Scroll right">\u203a</button></div>';
+  }
   function grid(items) {
-    if (!items.length) return '<p class="lead">Nothing here yet. Try another search or <a href="#/">browse everything</a>.</p>';
+    if (!items.length) return '<p class="lead">Nothing here yet. Try another search.</p>';
     return '<div class="grid">' + items.map(card).join("") + "</div>";
   }
   function platformCard(p) {
     var ext = p.external ? ' target="_blank" rel="noopener"' : "";
-    var href = p.internal ? "#/" + p.key : p.href;
-    var tag = p.external ? '<span class="ext">\u2197</span>' : "";
+    var href = p.internal ? "#open:" + p.key : p.href;
     return '<a class="platform" href="' + href + '"' + ext + ' style="--pc:' + (p.color || "#4a5568") + '">' +
       '<span class="p-icon">' + (p.icon || "\u25CF") + "</span>" +
-      '<span class="p-body"><b>' + esc(p.name) + tag + "</b><small>" + esc(p.desc) + "</small></span></a>";
+      '<span class="p-body"><b>' + esc(p.name) + (p.external ? '<span class="ext">\u2197</span>' : "") + "</b><small>" + esc(p.desc) + "</small></span></a>";
   }
   function videoCard(v) {
-    var id = ytId(v.url);
-    var img = id ? "https://img.youtube.com/vi/" + id + "/hqdefault.jpg" : "";
+    var id = ytId(v.url), img = id ? "https://img.youtube.com/vi/" + id + "/hqdefault.jpg" : "";
     return '<article class="yt-card"><a class="yt-thumb" href="' + v.url + '" target="_blank" rel="noopener">' +
-      (img ? '<img loading="lazy" src="' + img + '" alt="' + esc(v.title) + '">' : "") +
-      '<span class="yt-play">\u25B6</span></a><div class="yt-body"><div class="cat">' + esc(v.year || "Rare") + "</div>" +
-      "<h3>" + esc(v.title) + "</h3><p>" + esc(v.desc) + "</p>" +
+      (img ? '<img loading="lazy" src="' + img + '" alt="' + esc(v.title) + '">' : "") + '<span class="yt-play">\u25B6</span></a>' +
+      '<div class="yt-body"><div class="cat">' + esc(v.year || "Rare") + "</div><h3>" + esc(v.title) + "</h3><p>" + esc(v.desc) + "</p>" +
       '<div class="meta"><span>' + esc(v.channel || "YouTube") + '</span><a href="' + v.url + '" target="_blank" rel="noopener">Watch \u2197</a></div></div></article>';
   }
-  function linkCard(x) {
-    return '<a class="link-card" href="' + x.url + '" target="_blank" rel="noopener"><b>' + esc(x.title) + "</b><small>" + esc(x.desc) + '</small><span class="ext">\u2197</span></a>';
-  }
+  function linkCard(x) { return '<a class="link-card" href="' + x.url + '" target="_blank" rel="noopener"><b>' + esc(x.title) + "</b><small>" + esc(x.desc) + '</small><span class="ext">\u2197</span></a>'; }
 
+  /* ---------- three-tier header ---------- */
   function headerHTML(active) {
-    var nav = [["#/", "Home", "home"], ["#/images", "Images", "images"], ["#/videos", "Videos", "videos"],
-      ["#/notes", "Notes", "notes"], ["#/otherside", "Other Side", "otherside"], ["#/about", "About Us", "about"]]
-      .map(function (n) { return '<a href="' + n[0] + '"' + (active === n[2] ? ' class="active"' : "") + ">" + n[1] + "</a>"; }).join("");
-    var chips = CATS.map(function (c) { return '<a class="chip" href="#/category?cat=' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a>"; }).join("");
-    return '<div class="wrap"><div class="header-top">' +
-      '<a class="brand" href="#/"><span class="brand-mark">R</span><span>Rare<small>community archive</small></span></a>' +
+    var tier2 = PANELS.map(function (p) {
+      return '<a href="#' + p[0] + '" data-panel="' + p[0] + '"' + (active === p[0] ? ' class="active"' : "") + ">" + p[1] + "</a>";
+    }).join("");
+    var tier3 = CATS.map(function (c) {
+      return '<a class="chip" href="#cat:' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a>";
+    }).join("");
+    return '<div class="wrap">' +
+      /* tier 1: web name + search */
+      '<div class="tier1"><a class="brand" href="#home"><span class="brand-mark">R</span><span>Rare<small>community archive</small></span></a>' +
       '<form class="search-form" id="search-form" role="search" autocomplete="off">' +
       '<input type="search" id="global-search" placeholder="Search rare photos, videos and notes\u2026" aria-label="Search Rare">' +
       '<button type="submit">Search</button><div class="suggest" id="suggest" role="listbox"></div></form></div>' +
-      '<nav class="main-nav" aria-label="Primary">' + nav + "</nav>" +
-      '<div class="cat-strip" aria-label="Categories">' + chips + "</div></div>";
-  }
-  function footerHTML() {
-    return '<div class="wrap"><div class="footer-cols">' +
-      "<div><h4>Rare</h4><p class=\"small\">" + esc(S.tagline) + " Like a wiki for the rare and the nearly lost \u2014 anyone can contribute. Found something rare? Send it in and it can be published here.</p>" +
-      '<p style="margin-top:12px"><a class="mail" href="mailto:' + S.email + '">\u2709 ' + esc(S.email) + "</a> " +
-      '<a class="wa" href="' + S.whatsappLink + '" target="_blank" rel="noopener">\uD83D\uDCAC WhatsApp ' + esc(S.whatsapp) + "</a></p></div>" +
-      "<div><h4>Browse</h4><ul>" +
-      '<li><a href="#/images">Rare Photos</a></li><li><a href="#/videos">Rare Videos</a></li>' +
-      '<li><a href="#/notes">Rare Notes</a></li><li><a href="#/otherside">Other Side Collection</a></li>' +
-      '<li><a href="#/search">Search the archive</a></li></ul></div>' +
-      "<div><h4>Categories</h4><ul>" + CATS.map(function (c) { return '<li><a href="#/category?cat=' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a></li>"; }).join("") + "</ul></div></div>" +
-      '<div class="footer-bottom"><span>Rare is a community project. Content is shared for study and remembrance; rights stay with their original owners.</span>' +
-      '<span><a href="#/about">About Us</a> \u00b7 <a href="#/about">Contribute</a></span></div></div>';
+      /* tier 2: main pages */
+      '<nav class="tier2" aria-label="Pages"><span class="tier-label">Pages</span>' + tier2 + "</nav>" +
+      /* tier 3: categories */
+      '<nav class="tier3" aria-label="Categories"><span class="tier-label">Categories</span>' +
+      '<button class="strip-nav" id="strip-l" aria-label="Scroll categories left">\u2039</button>' +
+      '<div class="cat-strip" id="cat-strip">' + tier3 + "</div>" +
+      '<button class="strip-nav" id="strip-r" aria-label="Scroll categories right">\u203a</button></nav></div>';
   }
 
+  /* ---------- panels ---------- */
+  function sidebar() {
+    return '<aside class="sidebar"><div class="side-box"><h3>What is Rare?</h3><p class="small">A volunteer-run archive of photographs, footage and notes that are hard to find, explained for newcomers.</p></div>' +
+      '<div class="side-box"><h3>Contribute</h3><p class="small">Anyone can add to Rare. Send a photo, a video link or notes.</p><p><a class="btn" href="#about" style="padding:8px 16px;font-size:.85rem">Submit a rare find</a></p></div>' +
+      '<div class="side-box"><h3>Other Side</h3><ul><li><a href="#open:youtube">YouTube \u2014 10 rare videos</a></li><li><a href="#open:wikipedia">Wikipedia \u2014 pages &amp; images</a></li><li><a href="#otherside">All platforms</a></li></ul></div>' +
+      '<div class="side-box"><h3>Contact</h3><ul><li>\u2709 <a href="mailto:' + S.email + '">' + esc(S.email) + '</a></li><li>\uD83D\uDCAC <a href="' + S.whatsappLink + '" target="_blank" rel="noopener">WhatsApp ' + esc(S.whatsapp) + "</a></li></ul></div></aside>";
+  }
+  function pHome() {
+    var recent = ITEMS.filter(isRecent).sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
+    var latest = ITEMS.slice().sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; }).slice(0, 8);
+    function n(f) { return ITEMS.filter(f).length; }
+    var cats = CATS.map(function (c) {
+      var count = (c.key === "Recent") ? n(isRecent) : n(function (x) { return x.category === c.key; });
+      return '<a class="card" style="text-decoration:none" href="#cat:' + encodeURIComponent(c.key) + '"><div class="body"><div class="cat">Category</div><h3>' + c.key + "</h3><p>" + c.blurb + '</p><div class="meta"><span>' + count + " entr" + (count === 1 ? "y" : "ies") + "</span><span>Open &rarr;</span></div></div></a>";
+    }).join("");
+    return '<div class="wrap"><section class="hero"><div class="kicker">Community archive</div><h1>Rare</h1>' +
+      '<p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Photos, videos and notes that deserve to survive. Like Wikipedia, <b>anyone can contribute</b>.</p>' +
+      '<div class="hero-actions"><a class="btn" href="#videos">Explore the archive</a><a class="btn ghost" href="#about">Submit a rare find</a><a class="btn ghost" href="#open:search">Search</a></div>' +
+      '<p class="scroll-hint" style="margin-top:14px">\u2190 Swipe or scroll sideways to move between pages \u2192</p>' +
+      '<div class="stat-row"><div class="stat"><b>' + ITEMS.length + '</b><span>Entries</span></div><div class="stat"><b>' + n(function (x) { return x.type === "photo"; }) + '</b><span>Rare photos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "video"; }) + '</b><span>Rare videos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "note"; }) + '</b><span>Rare notes</span></div><div class="stat"><b>' + CATS.length + '</b><span>Categories</span></div></div></section></div>' +
+      '<div class="wrap layout"><main>' +
+      '<div class="section-head"><h2>Recent \u2014 last 24 hours</h2><a class="more" href="#cat:Recent">View all recent &rarr;</a></div>' + row(recent) +
+      '<div class="section-head"><h2>Latest additions</h2><span class="scroll-hint">scroll \u2192</span></div>' + row(latest) +
+      '<div class="section-head"><h2>Browse by category</h2><span class="scroll-hint">scroll \u2192</span></div><div class="row-wrap"><button class="row-arrow l">\u2039</button><div class="row">' + cats + '</div><button class="row-arrow r">\u203a</button></div>' +
+      '<h2>Other Side Collection</h2><section class="collection-hero"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Other%20Side%20Collection%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23b32424%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235b1f9e%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22h%22%20cx%3D%220.5%22%20cy%3D%220.45%22%20r%3D%220.65%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232b2f4a%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230b0d18%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2221%22%20fill%3D%22url%28%23h%29%22/%3E%0A%20%20%3Cellipse%20cx%3D%2232%22%20cy%3D%2232%22%20rx%3D%2227%22%20ry%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.6%22%20stroke-width%3D%222%22%20transform%3D%22rotate%28-22%2032%2032%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2251%22%20cy%3D%2219%22%20r%3D%223.4%22%20fill%3D%22%23ffd166%22/%3E%0A%20%20%3Ccircle%20cx%3D%2213%22%20cy%3D%2245%22%20r%3D%222.2%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.85%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%224.2%22%20fill%3D%22%23ffffff%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%221.7%22%20fill%3D%22%23b32424%22/%3E%0A%3C/svg%3E%0A" alt="" onerror="this.style.display=\'none\'"><div><h1 style="font-size:1.5rem">Other Side Collection</h1><p class="lead" style="margin:0 0 12px">10 rare YouTube videos, Wikipedia pages and images, and links to Instagram, Facebook and the Internet Archive.</p><a class="btn" href="#otherside">Open the Other Side &rarr;</a></div></section>' +
+      "</main>" + sidebar() + "</div>";
+  }
+  function pType(type, title, kicker, lead) {
+    var list = ITEMS.filter(function (it) { return it.type === type; }).sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
+    return '<div class="wrap layout"><main><div class="panel-head"><div><div class="panel-kicker">' + kicker + '</div><h1 style="border:none;margin:0">' + title + "</h1></div>" +
+      '<span class="scroll-hint">scroll sideways \u2192</span></div><p class="lead">' + lead + '</p><p class="small"><b>' + list.length + "</b> entries \u2014 scroll the row to browse.</p>" + row(list) +
+      "<h2>All entries</h2>" + grid(list) + "</main>" + sidebar() + "</div>";
+  }
+  function pAbout() {
+    return '<div class="wrap layout"><main><div class="panel-kicker">About</div><h1>About Us</h1>' +
+      '<p class="lead">Rare is a community archive of the hard-to-find. It works a little like Wikipedia \u2014 open, explained for newcomers, and <b>anyone can contribute</b>.</p>' +
+      "<h2>Our idea</h2><p>Most rare things are not lost all at once. They fade \u2014 a negative in an attic, a demo tape in a drawer, a set of notes in a family file. Rare gives them a home with a short, honest description.</p>" +
+      "<h2>How to contribute</h2><p>No application and no account. Send a photo, a video link or notes with a sentence of context. If it is rare and yours to share, it can appear here \u2014 credited however you wish.</p>" +
+      '<h2 id="submit">Submit a Rare Find</h2><div class="notice">This form emails your submission to us. Prefer to write directly? Use the Gmail or WhatsApp links in the sidebar.</div>' +
+      '<form id="submit-form" class="form-grid" novalidate>' +
+      '<div class="field"><label for="f-name">Your name</label><input id="f-name" type="text" placeholder="How should we credit you?" required></div>' +
+      '<div class="field"><label for="f-email">Your email</label><input id="f-email" type="email" placeholder="you@example.com" required></div>' +
+      '<div class="field"><label for="f-type">What are you submitting?</label><select id="f-type"><option>Rare photo</option><option>Rare video</option><option>Rare note</option></select></div>' +
+      '<div class="field"><label for="f-cat">Category</label><select id="f-cat"><option>History</option><option>Gaming</option><option>News</option><option>Music</option><option>Movie</option><option>Planned</option></select></div>' +
+      '<div class="field"><label for="f-title">Title of the find</label><input id="f-title" type="text" placeholder="e.g. Lost studio demo, 1974" required></div>' +
+      '<div class="field"><label for="f-link">Link or source (optional)</label><input id="f-link" type="text" placeholder="A link, or where it came from"></div>' +
+      '<div class="field"><label for="f-notes">Tell us about it</label><textarea id="f-notes" placeholder="What is it? Where did you find it?" required></textarea></div>' +
+      '<div class="field" style="display:flex;gap:10px;align-items:flex-start"><input id="f-consent" type="checkbox" style="width:auto;margin-top:4px" required><label for="f-consent" style="font-weight:400;font-size:.86rem">I have the right to share this material, and I am happy for Rare to publish it with credit.</label></div>' +
+      '<div><button class="btn" type="submit">Send my submission</button> <a class="btn ghost" href="mailto:' + S.email + '">Or email us directly</a></div>' +
+      '<p class="small" id="form-status" role="status"></p></form>' +
+      '<h2>Contact</h2><p>Reach the founder any time at <a href="mailto:' + S.email + '">' + esc(S.email) + '</a> or on WhatsApp at <a href="' + S.whatsappLink + '" target="_blank" rel="noopener">' + esc(S.whatsapp) + "</a>.</p></main>" + sidebar() + "</div>";
+  }
+  function pOtherside() {
+    return '<div class="wrap layout"><main><div class="panel-kicker">Beyond the archive</div><h1 style="border:none">Other Side Collection</h1>' +
+      '<p class="lead">The rare things that live somewhere else \u2014 our shelf of outside sources. Scroll the row sideways to browse the platforms.</p>' +
+      '<div class="row-wrap"><button class="row-arrow l">\u2039</button><div class="row">' + COL.platforms.map(platformCard).join("") + '</div><button class="row-arrow r">\u203a</button></div>' +
+      '<h2>Start here</h2><div class="grid">' +
+      '<a class="card" style="text-decoration:none" href="#open:youtube"><div class="body"><div class="cat">Other Side &middot; YouTube</div><h3>10 rare videos</h3><p>From the oldest surviving film of 1888 to lost 1984 footage \u2014 real, watchable, rare.</p><div class="meta"><span>By link</span><span>Open &rarr;</span></div></div></a>' +
+      '<a class="card" style="text-decoration:none" href="#open:wikipedia"><div class="body"><div class="cat">Other Side &middot; Wikipedia</div><h3>Pages &amp; images</h3><p>Rare pages on lost media and rediscovered films, plus free historical images.</p><div class="meta"><span>Pages + images</span><span>Open &rarr;</span></div></div></a>' +
+      '<a class="card" style="text-decoration:none" href="#about"><div class="body"><div class="cat">Contribute</div><h3>Add a source</h3><p>Know a channel, page or account worth adding?</p><div class="meta"><span>Anyone can</span><span>Submit &rarr;</span></div></div></a></div>' +
+      "</main>" + sidebar() + "</div>";
+  }
+
+  /* ---------- sheets ---------- */
+  var sheet;
+  function sheetShell(title, body) {
+    return '<div class="sheet-bar"><div class="wrap"><button class="sheet-back" id="sheet-back">\u2039 Back</button><b style="font-family:Georgia,serif;font-size:1.05rem">' + esc(title) + "</b></div></div>" +
+      '<div class="wrap" style="padding-top:18px;padding-bottom:60px">' + body + "</div>";
+  }
+  function openSheet(title, body) {
+    sheet.innerHTML = sheetShell(title, body);
+    sheet.classList.add("open");
+    sheet.scrollTop = 0;
+    var b = document.getElementById("sheet-back");
+    if (b) b.addEventListener("click", closeSheet);
+    wireRows(sheet);
+  }
+  function closeSheet() { sheet.classList.remove("open"); sheet.innerHTML = ""; }
+
+  function openItem(id) {
+    var it = byId(id);
+    if (!it) return openSheet("Not found", "<p>This entry may have moved.</p>");
+    var media = "";
+    if (it.type === "photo") media = '<figure class="detail-figure"><img src="' + thumb(it) + '" alt="' + esc(it.title) + '"><figcaption>' + esc(it.title) + " \u00b7 " + esc(it.source) + "</figcaption></figure>";
+    else if (it.type === "video") media = '<figure class="detail-figure"><div class="video-frame"><div class="play">\u25B6</div></div><figcaption>Video entry \u00b7 placeholder player.</figcaption></figure>';
+    var rel = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 6);
+    openSheet(it.title,
+      '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + TYPE_LABEL[it.type] + "</span></div>" +
+      '<p class="lead">' + esc(it.summary) + "</p>" + media +
+      '<table class="meta-table"><tr><th>Type</th><td>' + TYPE_LABEL[it.type] + "</td></tr><tr><th>Category</th><td>" + esc(it.category) + "</td></tr>" +
+      "<tr><th>Origin</th><td>" + esc(it.place || "\u2014") + "</td></tr><tr><th>Source</th><td>" + esc(it.source) + "</td></tr><tr><th>Added</th><td>" + timeAgo(it.addedHoursAgo) + "</td></tr></table>" +
+      "<h2>Notes</h2><p>" + esc(it.body) + "</p>" +
+      (rel.length ? "<h2>More in " + esc(it.category) + "</h2>" + row(rel) : ""));
+  }
+  function openCategory(key) {
+    var meta = CATS.filter(function (c) { return c.key === key; })[0] || CATS[0];
+    var list = (key === "Recent") ? ITEMS.filter(isRecent) : ITEMS.filter(function (it) { return it.category === key; });
+    list = list.sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
+    openSheet(meta.key, '<p class="lead">' + esc(meta.blurb) + '</p><p class="small"><b>' + list.length + "</b> entries \u2014 scroll the row \u2192</p>" + row(list) + "<h2>All entries</h2>" + grid(list));
+  }
+  function openSearch(q) {
+    var res = search(q);
+    openSheet("Search the archive",
+      '<form class="search-form" id="sheet-search" role="search" style="max-width:720px;margin:0 0 14px"><input type="search" id="sheet-q" value="' + esc(q) + '" placeholder="Search rare photos, videos and notes\u2026"><button type="submit">Search</button></form>' +
+      '<p class="tagline">' + (q ? "<b>" + res.length + "</b> result" + (res.length === 1 ? "" : "s") + " for \u201c" + esc(q) + "\u201d" : "Type a word \u2014 try \u201cprototype\u201d, \u201cdemo\u201d, \u201cmap\u201d or \u201clost\u201d.") + "</p>" + (q ? grid(res) : ""));
+    var f = document.getElementById("sheet-search");
+    if (f) f.addEventListener("submit", function (e) { e.preventDefault(); openSearch(document.getElementById("sheet-q").value.trim()); });
+  }
+  function openYoutube() {
+    openSheet("Other Side \u201a YouTube", '<p class="lead">Ten rare videos, kept by link. Each opens on YouTube in a new tab \u2014 nothing is copied, and all credit stays with the original uploaders.</p>' +
+      '<p class="small"><b>' + COL.youtube.length + '</b> rare videos \u2014 scroll the row \u2192</p>' +
+      '<div class="row-wrap"><button class="row-arrow l">\u2039</button><div class="row">' + COL.youtube.map(function (v) { return '<div style="flex:0 0 300px">' + videoCard(v) + "</div>"; }).join("") + '</div><button class="row-arrow r">\u203a</button></div>' +
+      "<h2>All videos</h2><div class=\"yt-grid\">" + COL.youtube.map(videoCard).join("") + "</div>" +
+      '<div class="notice">External YouTube links \u2014 if a video is removed by its owner the link may stop working.</div>');
+  }
+  function openWikipedia() {
+    openSheet("Other Side \u201a Wikipedia", '<p class="lead">Wikipedia is the closest thing to Rare\u2019s own spirit \u2014 free, open and written by everyone.</p>' +
+      '<h2>Pages</h2><div class="link-grid">' + COL.wikipedia.pages.map(linkCard).join("") + "</div>" +
+      '<h2>Images</h2><div class="link-grid">' + COL.wikipedia.images.map(linkCard).join("") + "</div>");
+  }
+
+  /* ---------- search ---------- */
   function score(it, q) {
     var t = (it.title + " " + it.summary + " " + it.body + " " + it.category + " " + it.source + " " + (it.place || "")).toLowerCase();
     var terms = q.toLowerCase().split(/\s+/).filter(Boolean), total = 0;
@@ -733,198 +930,158 @@ window.RARE_COLLECTION = {
     return total;
   }
   function search(q) {
-    q = (q || "").trim();
-    if (!q) return [];
+    q = (q || "").trim(); if (!q) return [];
     return ITEMS.map(function (it) { return { it: it, s: score(it, q) }; }).filter(function (r) { return r.s > 0; })
       .sort(function (a, b) { return b.s - a.s; }).map(function (r) { return r.it; });
   }
 
-  /* ---------- views ---------- */
-  function vHome() {
-    var recent = ITEMS.filter(isRecent).sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
-    var latest = ITEMS.slice().sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; }).slice(0, 6);
-    function n(f) { return ITEMS.filter(f).length; }
-    var cats = CATS.map(function (c) {
-      var count = (c.key === "Recent") ? n(isRecent) : n(function (x) { return x.category === c.key; });
-      return '<a class="card" style="text-decoration:none" href="#/category?cat=' + encodeURIComponent(c.key) + '"><div class="body"><div class="cat">Category</div><h3>' + c.key + "</h3><p>" + c.blurb + '</p><div class="meta"><span>' + count + " entr" + (count === 1 ? "y" : "ies") + "</span><span>Explore &rarr;</span></div></div></a>";
-    }).join("");
-    return '<div class="wrap"><section class="hero"><div class="kicker">Community archive</div><h1>Rare</h1>' +
-      '<p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Photos, videos and notes that deserve to survive \u2014 collected, explained and kept open for everyone. Like Wikipedia, <b>anyone can contribute</b>.</p>' +
-      '<div class="hero-actions"><a class="btn" href="#latest">Explore the archive</a><a class="btn ghost" href="#/about">Submit a rare find</a><a class="btn ghost" href="#/search">Search</a></div>' +
-      '<div class="stat-row"><div class="stat"><b>' + ITEMS.length + '</b><span>Entries</span></div><div class="stat"><b>' + n(function (x) { return x.type === "photo"; }) + '</b><span>Rare photos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "video"; }) + '</b><span>Rare videos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "note"; }) + '</b><span>Rare notes</span></div><div class="stat"><b>' + CATS.length + '</b><span>Categories</span></div></div></section></div>' +
-      '<div class="wrap layout"><main>' +
-      '<div class="section-head"><h2>Recent \u2014 published in the last 24 hours</h2><a class="more" href="#/category?cat=Recent">View all recent &rarr;</a></div>' + grid(recent) +
-      '<div class="section-head" id="latest"><h2>Latest additions</h2><a class="more" href="#/search">Search everything &rarr;</a></div>' + grid(latest) +
-      '<h2>Browse by category</h2><p class="tagline">Every entry is filed under one of seven collections.</p><div class="grid">' + cats + "</div>" +
-      '<h2>Other Side Collection</h2><p class="tagline">The rare things that live somewhere else \u2014 rare videos on YouTube, Wikipedia pages and images, and more.</p>' +
-      '<section class="collection-hero"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Other%20Side%20Collection%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23b32424%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235b1f9e%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22h%22%20cx%3D%220.5%22%20cy%3D%220.45%22%20r%3D%220.65%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232b2f4a%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230b0d18%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2221%22%20fill%3D%22url%28%23h%29%22/%3E%0A%20%20%3Cellipse%20cx%3D%2232%22%20cy%3D%2232%22%20rx%3D%2227%22%20ry%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.6%22%20stroke-width%3D%222%22%20transform%3D%22rotate%28-22%2032%2032%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2251%22%20cy%3D%2219%22%20r%3D%223.4%22%20fill%3D%22%23ffd166%22/%3E%0A%20%20%3Ccircle%20cx%3D%2213%22%20cy%3D%2245%22%20r%3D%222.2%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.85%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%224.2%22%20fill%3D%22%23ffffff%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%221.7%22%20fill%3D%22%23b32424%22/%3E%0A%3C/svg%3E%0A" alt="Other Side Collection icon" onerror="this.style.display=\'none\'"><div><h1 style="font-size:1.5rem">Other Side Collection</h1><p class="lead" style="margin:0 0 12px">10 rare YouTube videos, Wikipedia pages and images, and links to Instagram, Facebook and the Internet Archive.</p><a class="btn" href="#/otherside">Explore the Other Side &rarr;</a></div></section>' +
-      "</main>" + sidebar() + "</div>";
+  /* ---------- wiring ---------- */
+  var track, panels = [], idx = 0;
+  function panelIndex(key) { for (var i = 0; i < PANELS.length; i++) if (PANELS[i][0] === key) return i; return 0; }
+  function goTo(key) {
+    idx = panelIndex(key);
+    track.scrollTo({ left: idx * track.clientWidth, behavior: "smooth" });
+    syncNav(idx);
   }
-  function sidebar() {
-    return '<aside class="sidebar"><div class="side-box"><h3>What is Rare?</h3><p class="small">Rare is a volunteer-run archive of photographs, footage and written notes that are hard to find, explained for newcomers.</p></div>' +
-      '<div class="side-box"><h3>Contribute</h3><p class="small">Anyone can add to Rare. Send a photo, a video link or a set of notes.</p><p><a class="btn" href="#/about" style="padding:8px 16px;font-size:.85rem">Submit a rare find</a></p></div>' +
-      '<div class="side-box"><h3>Other Side Collection</h3><ul><li><a href="#/youtube">YouTube \u2014 10 rare videos</a></li><li><a href="#/wikipedia">Wikipedia \u2014 pages &amp; images</a></li><li><a href="#/otherside">All platforms</a></li></ul></div>' +
-      '<div class="side-box"><h3>Contact</h3><ul><li>\u2709 <a href="mailto:' + S.email + '">' + esc(S.email) + '</a></li><li>\uD83D\uDCAC <a href="' + S.whatsappLink + '" target="_blank" rel="noopener">WhatsApp ' + esc(S.whatsapp) + "</a></li></ul></div></aside>";
+  function syncNav(i) {
+    var links = document.querySelectorAll(".tier2 a");
+    for (var k = 0; k < links.length; k++) links[k].classList.toggle("active", k === i);
+    var dots = document.querySelectorAll(".dots button");
+    for (var d = 0; d < dots.length; d++) dots[d].classList.toggle("active", d === i);
   }
-  function vType(type, title, lead) {
-    var list = ITEMS.filter(function (it) { return it.type === type; }).sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
-    return '<div class="wrap layout"><main><h1>' + title + '</h1><p class="lead">' + lead + '</p><p class="small"><b>' + list.length + '</b> entries in the archive.</p>' + grid(list) + "</main>" + sidebar() + "</div>";
-  }
-  function vCategory(key) {
-    var meta = CATS.filter(function (c) { return c.key === key; })[0] || CATS[0];
-    var list = (key === "Recent") ? ITEMS.filter(isRecent) : ITEMS.filter(function (it) { return it.category === key; });
-    list = list.sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
-    document.title = meta.key + " \u2014 Rare";
-    return '<div class="wrap layout"><main><h1>' + esc(meta.key) + '</h1><p class="lead">' + esc(meta.blurb) + '</p><p class="small"><b>' + list.length + '</b> entries in this category.</p>' + grid(list) + "</main>" + sidebar() + "</div>";
-  }
-  function vSearch(q) {
-    var res = search(q);
-    var head = q ? "<b>" + res.length + "</b> result" + (res.length === 1 ? "" : "s") + " for \u201c" + esc(q) + "\u201d"
-      : "Type a word above \u2014 try \u201cprototype\u201d, \u201cdemo\u201d, \u201cmap\u201d or \u201clost\u201d.";
-    return '<div class="wrap layout full"><main><h1>Search the archive</h1>' +
-      '<form class="search-form" id="big-search" role="search" style="max-width:720px;margin:12px 0 6px"><input type="search" id="search-input" value="' + esc(q) + '" placeholder="Search rare photos, videos and notes\u2026" aria-label="Search Rare"><button type="submit">Search</button></form>' +
-      '<p class="tagline">' + head + "</p>" + (q ? grid(res) : "") + "</main></div>";
-  }
-  function vItem(id) {
-    var it = byId(id);
-    if (!it) return '<div class="wrap layout full"><main><h1>Not found</h1><p>This entry may have moved. <a href="#/">Back to home</a>.</p></main></div>';
-    document.title = it.title + " \u2014 Rare";
-    var media = "";
-    if (it.type === "photo") media = '<figure class="detail-figure"><img src="' + thumb(it) + '" alt="' + esc(it.title) + '"><figcaption>' + esc(it.title) + " \u00b7 " + esc(it.source) + "</figcaption></figure>";
-    else if (it.type === "video") media = '<figure class="detail-figure"><div class="video-frame"><div class="play">\u25B6</div></div><figcaption>Video entry \u00b7 placeholder player. A hosted video or embed link can be attached when rights allow.</figcaption></figure>';
-    var related = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 3);
-    return '<div class="wrap layout"><main><p class="small"><a href="#/">Home</a> \u203a <a href="#/category?cat=' + encodeURIComponent(it.category) + '">' + esc(it.category) + "</a> \u203a " + esc(it.title) + "</p>" +
-      '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + TYPE_LABEL[it.type] + "</span></div>" +
-      '<p class="lead">' + esc(it.summary) + "</p>" + media +
-      '<table class="meta-table"><tr><th>Type</th><td>' + TYPE_LABEL[it.type] + "</td></tr><tr><th>Category</th><td>" + esc(it.category) + "</td></tr>" +
-      "<tr><th>Origin</th><td>" + esc(it.place || "\u2014") + "</td></tr><tr><th>Source</th><td>" + esc(it.source) + "</td></tr>" +
-      "<tr><th>Added</th><td>" + timeAgo(it.addedHoursAgo) + " (" + (isRecent(it) ? "recent" : "archived") + ")</td></tr></table>" +
-      "<h2>Notes</h2><p>" + esc(it.body) + "</p>" +
-      '<p class="small">Spotted something wrong, or hold a better copy? <a href="#/about">Contribute a correction</a> or email <a href="mailto:' + S.email + '">' + esc(S.email) + "</a>.</p>" +
-      (related.length ? "<h2>More in " + esc(it.category) + "</h2>" + grid(related) : "") + "</main>" + sidebar() + "</div>";
-  }
-  function vOtherside() {
-    var start = '<div class="grid">' +
-      '<a class="card" style="text-decoration:none" href="#/youtube"><div class="body"><div class="cat">Other Side &middot; YouTube</div><h3>10 rare videos</h3><p>From the oldest surviving film of 1888 to lost 1984 footage \u2014 real, watchable, rare.</p><div class="meta"><span>By link</span><span>Open &rarr;</span></div></div></a>' +
-      '<a class="card" style="text-decoration:none" href="#/wikipedia"><div class="body"><div class="cat">Other Side &middot; Wikipedia</div><h3>Pages &amp; images</h3><p>Rare pages on lost media and rediscovered films, plus free historical images.</p><div class="meta"><span>Pages + images</span><span>Open &rarr;</span></div></div></a>' +
-      '<a class="card" style="text-decoration:none" href="#/about"><div class="body"><div class="cat">Contribute</div><h3>Add a source</h3><p>Know a channel, a page or an account worth adding?</p><div class="meta"><span>Anyone can</span><span>Submit &rarr;</span></div></div></a></div>';
-    return '<div class="wrap layout"><main><section class="collection-hero"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Other%20Side%20Collection%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23b32424%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235b1f9e%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22h%22%20cx%3D%220.5%22%20cy%3D%220.45%22%20r%3D%220.65%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232b2f4a%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230b0d18%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2221%22%20fill%3D%22url%28%23h%29%22/%3E%0A%20%20%3Cellipse%20cx%3D%2232%22%20cy%3D%2232%22%20rx%3D%2227%22%20ry%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.6%22%20stroke-width%3D%222%22%20transform%3D%22rotate%28-22%2032%2032%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2251%22%20cy%3D%2219%22%20r%3D%223.4%22%20fill%3D%22%23ffd166%22/%3E%0A%20%20%3Ccircle%20cx%3D%2213%22%20cy%3D%2245%22%20r%3D%222.2%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.85%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%224.2%22%20fill%3D%22%23ffffff%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%221.7%22%20fill%3D%22%23b32424%22/%3E%0A%3C/svg%3E%0A" alt="Other Side Collection icon" onerror="this.style.display=\'none\'"><div><div class="kicker">Beyond the archive</div><h1>Other Side Collection</h1><p class="lead" style="margin:0">The rare things that live somewhere else. Our shelf of outside sources \u2014 YouTube, Wikipedia, Instagram, Facebook and more.</p></div></section>' +
-      '<h2>Platforms</h2><p class="tagline">YouTube and Wikipedia open a page here on Rare. The rest open that platform\u2019s search in a new tab.</p><div class="platform-grid">' + COL.platforms.map(platformCard).join("") + "</div>" +
-      "<h2>Start here</h2>" + start + "</main>" + sidebar() + "</div>";
-  }
-  function vYoutube() {
-    return '<div class="wrap layout"><main><p class="small"><a href="#/">Home</a> &rsaquo; <a href="#/otherside">Other Side Collection</a> &rsaquo; YouTube</p>' +
-      "<h1>Other Side Collection &rsaquo; YouTube</h1><p class=\"lead\">Ten rare videos, kept here by link. Each card opens the video on YouTube in a new tab \u2014 nothing is copied, and all credit stays with the original uploaders.</p>" +
-      '<p class="small"><b>' + COL.youtube.length + '</b> rare videos in this collection.</p><div class="yt-grid">' + COL.youtube.map(videoCard).join("") + "</div>" +
-      '<div class="notice">These are external YouTube links. If a video is removed by its owner the link may stop working \u2014 tell us and we will update it.</div></main>' + sidebar() + "</div>";
-  }
-  function vWikipedia() {
-    return '<div class="wrap layout"><main><p class="small"><a href="#/">Home</a> &rsaquo; <a href="#/otherside">Other Side Collection</a> &rsaquo; Wikipedia</p>' +
-      "<h1>Other Side Collection &rsaquo; Wikipedia</h1><p class=\"lead\">Wikipedia is the closest thing to Rare\u2019s own spirit \u2014 free, open and written by everyone. Here are the pages and image collections we point to.</p>" +
-      '<h2 id="pages">Pages</h2><p class="tagline">Articles on lost media, rediscovered films and the history of rare images.</p><div class="link-grid">' + COL.wikipedia.pages.map(linkCard).join("") + "</div>" +
-      '<h2 id="images">Images</h2><p class="tagline">Free historical image collections on Wikimedia Commons.</p><div class="link-grid">' + COL.wikipedia.images.map(linkCard).join("") + "</div>" +
-      '<div class="notice">All links open Wikipedia or Wikimedia Commons in a new tab, under the Creative Commons Attribution-ShareAlike licence.</div></main>' + sidebar() + "</div>";
-  }
-  function vAbout() {
-    return '<div class="wrap layout"><main><h1>About Us</h1>' +
-      '<p class="lead">Rare is a community archive of the hard-to-find: photographs, footage and written notes that might otherwise disappear. It works a little like Wikipedia \u2014 open, explained for newcomers, and <b>anyone can contribute</b>.</p>' +
-      "<h2>Our idea</h2><p>Most rare things are not lost all at once. They fade \u2014 a negative in an attic, a demo tape in a drawer, a set of notes in a family file. Rare gives them a home with a short, honest description: what it is, where it came from, and why it is worth keeping.</p>" +
-      "<h2>How to contribute</h2><p>There is no application and no account to create. Send a photo, a video link or a set of notes with a sentence or two of context. If it is rare and yours to share, it can appear in the archive \u2014 credited however you wish.</p>" +
-      '<h2 id="submit">Submit a Rare Find</h2><div class="notice">This form emails your submission to us. Prefer to write directly? Use the Gmail or WhatsApp links in the sidebar.</div>' +
-      '<form id="submit-form" class="form-grid" novalidate>' +
-      '<div class="field"><label for="f-name">Your name</label><input id="f-name" type="text" placeholder="How should we credit you?" required></div>' +
-      '<div class="field"><label for="f-email">Your email</label><input id="f-email" type="email" placeholder="you@example.com" required></div>' +
-      '<div class="field"><label for="f-type">What are you submitting?</label><select id="f-type"><option>Rare photo</option><option>Rare video</option><option>Rare note</option></select></div>' +
-      '<div class="field"><label for="f-cat">Category</label><select id="f-cat"><option>History</option><option>Gaming</option><option>News</option><option>Music</option><option>Movie</option><option>Planned</option></select></div>' +
-      '<div class="field"><label for="f-title">Title of the find</label><input id="f-title" type="text" placeholder="e.g. Lost studio demo, 1974" required></div>' +
-      '<div class="field"><label for="f-link">Link or source (optional)</label><input id="f-link" type="text" placeholder="A link, or where it came from"></div>' +
-      '<div class="field"><label for="f-notes">Tell us about it</label><textarea id="f-notes" placeholder="What is it? Where did you find it? Why does it matter?" required></textarea></div>' +
-      '<div class="field" style="display:flex;gap:10px;align-items:flex-start"><input id="f-consent" type="checkbox" style="width:auto;margin-top:4px" required><label for="f-consent" style="font-weight:400;font-size:.86rem">I have the right to share this material, and I am happy for Rare to publish it with credit.</label></div>' +
-      '<div><button class="btn" type="submit">Send my submission</button> <a class="btn ghost" href="mailto:' + S.email + '">Or email us directly</a></div>' +
-      '<p class="small" id="form-status" role="status"></p></form>' +
-      "<h2>Frequently asked</h2><p><b>Who runs Rare?</b> Rare is run by its founder, Samrat Barman, with contributions from readers. Reach out any time at <a href=\"mailto:" + S.email + "\">" + esc(S.email) + '</a> or on WhatsApp at <a href="' + S.whatsappLink + '" target="_blank" rel="noopener">' + esc(S.whatsapp) + "</a>.</p>" +
-      "<p><b>What belongs here?</b> Anything rare and shareable, with a clear description. We do not host material we do not have the right to share.</p></main>" + sidebar() + "</div>";
-  }
+  function currentIndex() { return Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); }
 
-  /* ---------- router ---------- */
-  function parseHash() {
-    var h = location.hash.replace(/^#\/?/, "");
-    var qs = "";
-    var qi = h.indexOf("?");
-    if (qi !== -1) { qs = h.slice(qi + 1); h = h.slice(0, qi); }
-    var params = {};
-    qs.split("&").forEach(function (kv) { if (!kv) return; var p = kv.split("="); params[decodeURIComponent(p[0])] = decodeURIComponent(p[1] || ""); });
-    return { path: h.replace(/\/$/, ""), params: params };
-  }
-  function render() {
-    var r = parseHash(), path = r.path;
-    var active = "home";
-    if (path === "images") active = "images";
-    else if (path === "videos") active = "videos";
-    else if (path === "notes") active = "notes";
-    else if (path === "otherside") active = "otherside";
-    else if (path === "youtube" || path === "wikipedia") active = "otherside";
-    else if (path === "about") active = "about";
-    document.getElementById("site-header").innerHTML = headerHTML(active);
-    document.getElementById("site-footer").innerHTML = footerHTML();
-    var html;
-    if (path === "" ) html = vHome();
-    else if (path === "images") html = vType("photo", "Rare Photos", "Photographs that are hard to find and easy to lose \u2014 lantern slides, maps, prototypes and archives.");
-    else if (path === "videos") html = vType("video", "Rare Videos", "Footage worth preserving \u2014 deleted scenes, lost demos, unreleased prototypes and newsreels.");
-    else if (path === "notes") html = vType("note", "Rare Notes", "Written things that survived by accident \u2014 notebooks, shot lists, lyric drafts and field reports.");
-    else if (path === "otherside") html = vOtherside();
-    else if (path === "youtube") html = vYoutube();
-    else if (path === "wikipedia") html = vWikipedia();
-    else if (path === "about") html = vAbout();
-    else if (path === "category") html = vCategory(r.params.cat || "History");
-    else if (path === "search") html = vSearch(r.params.q || "");
-    else if (path === "item") html = vItem(r.params.id || "");
-    else html = vHome();
-    document.getElementById("app").innerHTML = html;
-    if (path !== "category" && path !== "item") document.title = "Rare \u2014 a community archive of rare photos, videos & notes";
-    wireSearch();
-    wireAboutForm();
-  }
-  function wireSearch() {
-    var input = document.getElementById("global-search"), box = document.getElementById("suggest"), form = document.getElementById("search-form");
-    var big = document.getElementById("big-search");
-    if (form) form.addEventListener("submit", function (e) { e.preventDefault(); location.hash = "#/search?q=" + encodeURIComponent(input.value.trim()); });
-    if (big) {
-      var bi = document.getElementById("search-input");
-      big.addEventListener("submit", function (e) { e.preventDefault(); location.hash = "#/search?q=" + encodeURIComponent(bi.value.trim()); });
+  function wireRows(scope) {
+    var wraps = (scope || document).querySelectorAll(".row-wrap");
+    for (var i = 0; i < wraps.length; i++) {
+      (function (w) {
+        var r = w.querySelector(".row"), l = w.querySelector(".row-arrow.l"), rr = w.querySelector(".row-arrow.r");
+        if (!r) return;
+        if (l) l.addEventListener("click", function () { r.scrollBy({ left: -r.clientWidth * 0.85, behavior: "smooth" }); });
+        if (rr) rr.addEventListener("click", function () { r.scrollBy({ left: r.clientWidth * 0.85, behavior: "smooth" }); });
+      })(wraps[i]);
     }
-    if (!input || !box) return;
-    function close() { box.classList.remove("open"); box.innerHTML = ""; }
-    input.addEventListener("input", function () {
-      var q = input.value.trim();
-      if (q.length < 2) return close();
-      var hits = search(q).slice(0, 6);
-      if (!hits.length) { box.innerHTML = '<div class="s-empty">No matches for \u201c' + esc(q) + '\u201d</div>'; box.classList.add("open"); return; }
-      box.innerHTML = hits.map(function (it) {
-        return '<a href="#/item?id=' + encodeURIComponent(it.id) + '"><span class="s-type ' + it.type + '">' + TYPE_LABEL[it.type] + "</span><span>" + esc(it.title) + " <span style='color:#72777d'>\u00b7 " + esc(it.category) + "</span></span></a>";
-      }).join("");
-      box.classList.add("open");
-    });
-    document.addEventListener("click", function (e) { if (form && !form.contains(e.target)) close(); });
+  }
+  function wireHeader() {
+    var strip = document.getElementById("cat-strip");
+    var sl = document.getElementById("strip-l"), sr = document.getElementById("strip-r");
+    if (sl) sl.addEventListener("click", function () { strip.scrollBy({ left: -180, behavior: "smooth" }); });
+    if (sr) sr.addEventListener("click", function () { strip.scrollBy({ left: 180, behavior: "smooth" }); });
+
+    var form = document.getElementById("search-form"), input = document.getElementById("global-search"), box = document.getElementById("suggest");
+    if (form) form.addEventListener("submit", function (e) { e.preventDefault(); openSearch(input.value.trim()); });
+    if (input && box) {
+      input.addEventListener("input", function () {
+        var q = input.value.trim();
+        if (q.length < 2) { box.classList.remove("open"); box.innerHTML = ""; return; }
+        var hits = search(q).slice(0, 6);
+        if (!hits.length) { box.innerHTML = '<div class="s-empty">No matches for \u201c' + esc(q) + '\u201d</div>'; box.classList.add("open"); return; }
+        box.innerHTML = hits.map(function (it) {
+          return '<a href="#item:' + encodeURIComponent(it.id) + '"><span class="s-type ' + it.type + '">' + TYPE_LABEL[it.type] + "</span><span>" + esc(it.title) + " <span style='color:#72777d'>\u00b7 " + esc(it.category) + "</span></span></a>";
+        }).join("");
+        box.classList.add("open");
+      });
+      document.addEventListener("click", function (e) { if (!form.contains(e.target)) { box.classList.remove("open"); } });
+    }
   }
   function wireAboutForm() {
-    var form = document.getElementById("submit-form");
-    if (!form) return;
+    var form = document.getElementById("submit-form"); if (!form) return;
     var status = document.getElementById("form-status");
     form.addEventListener("submit", function (e) {
       if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); return; }
       e.preventDefault();
       var g = function (id) { var el = document.getElementById(id); return el ? el.value : ""; };
-      var subject = "Rare submission: " + (g("f-title") || "new find");
       var body = "Name: " + g("f-name") + "\nEmail: " + g("f-email") + "\nType: " + g("f-type") + "\nCategory: " + g("f-cat") +
         "\nTitle: " + g("f-title") + "\nLink/source: " + g("f-link") + "\n\nNotes:\n" + g("f-notes") + "\n";
       status.textContent = "Opening your email app to send this to " + S.email + "\u2026";
-      location.href = "mailto:" + S.email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      location.href = "mailto:" + S.email + "?subject=" + encodeURIComponent("Rare submission: " + (g("f-title") || "new find")) + "&body=" + encodeURIComponent(body);
     });
   }
 
-  window.addEventListener("hashchange", function () { render(); window.scrollTo(0, 0); });
-  document.addEventListener("DOMContentLoaded", render);
+  function route() {
+    var h = (location.hash || "").replace(/^#/, "");
+    if (h.indexOf("item:") === 0) return openItem(decodeURIComponent(h.slice(5)));
+    if (h.indexOf("cat:") === 0) return openCategory(decodeURIComponent(h.slice(4)));
+    if (h.indexOf("open:") === 0) {
+      var k = h.slice(5);
+      if (k === "youtube") return openYoutube();
+      if (k === "wikipedia") return openWikipedia();
+      if (k === "search") return openSearch("");
+      if (k === "otherside") return goTo("otherside");
+    }
+    if (h) { closeSheet(); return goTo(h); }
+    closeSheet();
+  }
+
+  function init() {
+    var header = document.getElementById("site-header");
+    track = document.getElementById("track");
+    sheet = document.getElementById("sheet");
+    header.innerHTML = headerHTML("home");
+
+    var frag = "";
+    frag += '<section class="panel" data-key="home">' + pHome() + "</section>";
+    frag += '<section class="panel" data-key="videos">' + pType("video", "Rare Videos", "Videos", "Footage worth preserving \u2014 deleted scenes, lost demos, unreleased prototypes and newsreels.") + "</section>";
+    frag += '<section class="panel" data-key="notes">' + pType("note", "Rare Notes", "Notes", "Written things that survived by accident \u2014 notebooks, shot lists, lyric drafts and field reports.") + "</section>";
+    frag += '<section class="panel" data-key="images">' + pType("photo", "Rare Photos", "Images", "Photographs that are hard to find and easy to lose \u2014 lantern slides, maps, prototypes and archives.") + "</section>";
+    frag += '<section class="panel" data-key="about">' + pAbout() + "</section>";
+    frag += '<section class="panel" data-key="otherside">' + pOtherside() + "</section>";
+    track.innerHTML = frag;
+
+    /* dots */
+    var dots = document.createElement("div");
+    dots.className = "dots";
+    dots.innerHTML = PANELS.map(function (p, i) { return '<button data-i="' + i + '" aria-label="' + p[1] + '"' + (i === 0 ? ' class="active"' : "") + "></button>"; }).join("");
+    document.body.appendChild(dots);
+    dots.addEventListener("click", function (e) { if (e.target.dataset.i != null) goTo(PANELS[+e.target.dataset.i][0]); });
+
+    wireHeader();
+    wireRows(document);
+    wireAboutForm();
+    setHeaderHeight();
+
+    var prev = document.getElementById("arrow-prev"), next = document.getElementById("arrow-next");
+    if (prev) prev.addEventListener("click", function () { goTo(PANELS[Math.max(0, currentIndex() - 1)][0]); });
+    if (next) next.addEventListener("click", function () { goTo(PANELS[Math.min(PANELS.length - 1, currentIndex() + 1)][0]); });
+
+    track.addEventListener("scroll", function () { syncNav(currentIndex()); }, { passive: true });
+
+    /* vertical wheel at a panel edge -> horizontal scroll */
+    track.addEventListener("wheel", function (e) {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      var panel = panelsEl()[currentIndex()];
+      if (!panel) return;
+      var atTop = panel.scrollTop <= 1;
+      var atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
+      if ((e.deltaY > 0 && atBottom) || (e.deltaY < 0 && atTop)) { e.preventDefault(); track.scrollLeft += e.deltaY; }
+    }, { passive: false });
+
+    document.addEventListener("keydown", function (e) {
+      if (sheet && sheet.classList.contains("open")) { if (e.key === "Escape") closeSheet(); return; }
+      var tag = (e.target.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if (e.key === "ArrowRight") goTo(PANELS[Math.min(PANELS.length - 1, currentIndex() + 1)][0]);
+      if (e.key === "ArrowLeft") goTo(PANELS[Math.max(0, currentIndex() - 1)][0]);
+    });
+
+    window.addEventListener("resize", function () {
+      setHeaderHeight();
+      track.scrollTo({ left: currentIndex() * track.clientWidth });
+    });
+
+    window.addEventListener("hashchange", route);
+    route();
+    if (!location.hash) syncNav(0);
+  }
+  function panelsEl() { return track.querySelectorAll(".panel"); }
+  function setHeaderHeight() {
+    var h = document.getElementById("site-header").offsetHeight;
+    document.documentElement.style.setProperty("--hdr", h + "px");
+    if (sheet) sheet.style.top = h + "px";
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 })();
 
 </script>
