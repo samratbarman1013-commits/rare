@@ -70,11 +70,9 @@
   /* ---------- shared chrome ---------- */
   function headerHTML(active) {
     var nav = [
-      ["index.html", "Home", "home"],
       ["videos.html", "Videos", "videos"],
       ["notes.html", "Notes", "notes"],
       ["images.html", "Images", "images"],
-      ["about.html", "About Us", "about"],
       ["otherside.html", "Other Side", "otherside"]
     ].map(function (n) {
       return '<a href="' + n[0] + '"' + (active === n[2] ? ' class="active"' : "") + ">" + n[1] + "</a>";
@@ -91,7 +89,8 @@
       '<input type="search" name="q" id="global-search" placeholder="Search rare photos, videos and notes\u2026" aria-label="Search Rare">' +
       '<button type="submit">Search</button>' +
       '<div class="suggest" id="suggest" role="listbox"></div>' +
-      "</form></div>" +
+      "</form>" +
+      '<a class="about-link' + (active === "about" ? " active" : "") + '" href="about.html">About</a></div>' +
       '<nav class="tier2" aria-label="Pages"><span class="tier-label">Pages</span>' + nav + "</nav>" +
       '<nav class="tier3" aria-label="Categories"><span class="tier-label">Categories</span><div class="cat-strip">' + chips + "</div></nav>" +
       "</div>";
