@@ -116,19 +116,25 @@
 
   /* ---------- cards ---------- */
   function card(it) {
+    var img = it.image || thumb(it);
+    var kind = it.kind || TYPE_LABEL[it.type];
     var link = "item.html?id=" + encodeURIComponent(it.id);
     return '<article class="card">' +
-      '<a class="thumb" href="' + link + '"><span class="badge ' + it.type + '">' + TYPE_LABEL[it.type] + "</span>" +
-      '<img loading="lazy" src="' + thumb(it) + '" alt="' + esc(it.title) + '"></a>' +
+      '<a class="thumb" href="' + link + '"><span class="badge ' + it.type + '">' + esc(kind) + "</span>" +
+      (it.starred ? '<span class="star">\u2605</span>' : "") +
+      '<img loading="lazy" src="' + esc(img) + '" alt="' + esc(it.title) + '"></a>' +
       '<div class="body"><div class="cat">' + esc(it.category) + "</div>" +
       '<h3><a href="' + link + '">' + esc(it.title) + "</a></h3>" +
-      "<p>" + esc(it.summary) + "</p>" +
-      '<div class="meta"><span>' + esc(it.source) + "</span><span>" + timeAgo(it.addedHoursAgo) + "</span></div>" +
+      "<p>" + esc(it.desc || it.summary || "") + "</p>" +
+      '<div class="meta"><a class="src" href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.source) + ' \u2197</a>' +
+      "<span>" + esc(it.year ? String(it.year) : (it.license || "")) + "</span></div>" +
       "</div></article>";
   }
   function grid(items) {
     if (!items.length) return '<p class="lead">Nothing here yet. Try another search or <a href="index.html">browse everything</a>.</p>';
-    return '<div class="grid">' + items.map(card).join("") + "</div>";
+    var shown = items.slice(0, 60);
+    var more = items.length > shown.length ? '<p class="small">Showing the first 60 of ' + items.length + '.</p>' : '';
+    return '<div class="grid">' + shown.map(card).join("") + "</div>" + more;
   }
 
   /* ---------- Other Side Collection ---------- */
@@ -162,13 +168,13 @@
 
   /* ---------- search engine ---------- */
   function score(it, q) {
-    var t = (it.title + " " + it.summary + " " + it.body + " " + it.category + " " + it.source + " " + (it.place || "")).toLowerCase();
+    var t = (it.title + " " + (it.desc || "") + " " + it.category + " " + it.source + " " + (it.kind || "")).toLowerCase();
     var terms = q.toLowerCase().split(/\s+/).filter(Boolean), total = 0;
     for (var i = 0; i < terms.length; i++) {
       if (t.indexOf(terms[i]) === -1) return 0;
       if (it.title.toLowerCase().indexOf(terms[i]) !== -1) total += 5;
       if (it.category.toLowerCase().indexOf(terms[i]) !== -1) total += 3;
-      if (it.summary.toLowerCase().indexOf(terms[i]) !== -1) total += 2;
+      if ((it.desc || "").toLowerCase().indexOf(terms[i]) !== -1) total += 2;
       total += 1;
     }
     return total;
@@ -294,27 +300,20 @@
       if (!host) return;
       if (!it) { host.innerHTML = "<h1>Not found</h1><p>This entry may have moved. <a href='index.html'>Back to home</a>.</p>"; return; }
       document.title = it.title + " \u2014 Rare";
-      var media = "";
-      if (it.type === "photo") {
-        media = '<figure class="detail-figure"><img src="' + thumb(it) + '" alt="' + esc(it.title) + '">' +
-          "<figcaption>" + esc(it.title) + " \u00b7 " + esc(it.source) + "</figcaption></figure>";
-      } else if (it.type === "video") {
-        media = '<figure class="detail-figure"><div class="video-frame"><div class="play">\u25B6</div></div>' +
-          "<figcaption>Video entry \u00b7 placeholder player. The community can attach a hosted video or embed link when rights allow.</figcaption></figure>";
-      }
-      var related = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 3);
+      var kind = it.kind || TYPE_LABEL[it.type];
+      var media = it.image ? '<figure class="detail-figure"><img src="' + esc(it.image) + '" alt="' + esc(it.title) + '"></figure>' : "";
+      var related = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 6);
       host.innerHTML =
         '<p class="small"><a href="index.html">Home</a> \u203a <a href="category.html?cat=' + encodeURIComponent(it.category) + '">' + esc(it.category) + "</a> \u203a " + esc(it.title) + "</p>" +
-        '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + TYPE_LABEL[it.type] + "</span></div>" +
-        '<p class="lead">' + esc(it.summary) + "</p>" + media +
-        '<table class="meta-table"><tr><th>Type</th><td>' + TYPE_LABEL[it.type] + "</td></tr>" +
+        '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + esc(kind) + "</span></div>" +
+        '<p class="lead">' + esc(it.desc || "") + "</p>" + media +
+        '<p><a class="btn" href="' + esc(it.link) + '" target="_blank" rel="noopener">Open original on ' + esc(it.source) + " \u2197</a></p>" +
+        '<table class="meta-table"><tr><th>Type</th><td>' + esc(kind) + "</td></tr>" +
         "<tr><th>Category</th><td>" + esc(it.category) + "</td></tr>" +
-        "<tr><th>Origin</th><td>" + esc(it.place || "\u2014") + "</td></tr>" +
         "<tr><th>Source</th><td>" + esc(it.source) + "</td></tr>" +
-        "<tr><th>Added</th><td>" + timeAgo(it.addedHoursAgo) + " (" + (isRecent(it) ? "recent" : "archived") + ")</td></tr></table>" +
-        "<h2>Notes</h2><p>" + esc(it.body) + "</p>" +
-        '<p class="small">Spotted something wrong, or hold a better copy? <a href="about.html#submit">Contribute a correction</a> or email ' +
-        '<a href="mailto:' + S.email + '">' + esc(S.email) + "</a>.</p>" +
+        (it.license ? "<tr><th>Licence</th><td>" + esc(it.license) + "</td></tr>" : "") +
+        (it.year ? "<tr><th>Year</th><td>" + esc(String(it.year)) + "</td></tr>" : "") +
+        '<tr><th>Link</th><td><a href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.link) + "</a></td></tr></table>" +
         (related.length ? '<h2>More in ' + esc(it.category) + "</h2>" + grid(related) : "");
     }
   }
