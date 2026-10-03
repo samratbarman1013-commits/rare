@@ -9,7 +9,7 @@
   var PANELS = [["home", "Home"], ["images", "Images"], ["videos", "Videos"], ["notes", "Notes"], ["about", "About Us"], ["otherside", "Other Side"]];
   var SECTION_LABEL = { photo: "Images", video: "Videos", note: "Notes" };
   var CAT_KEYS = CATS.map(function (c) { return c.key; });
-  var FILTERS = [["new", "New"], ["starred", "Starred"], ["popularity", "Popularity"], ["searches", "Most searched"]];
+  var FILTERS = [["new", "New"], ["starred", "Starred"], ["popular", "Popular"], ["oldest", "Oldest"]];
 
   /* ---------- helpers ---------- */
   function esc(s) {
@@ -51,12 +51,16 @@
   function ytId(u) { var m = String(u).match(/[?&]v=([^&]+)/) || String(u).match(/youtu\.be\/([^?]+)/); return m ? m[1] : ""; }
 
   function card(it) {
-    return '<article class="card"><a class="thumb" href="#item:' + encodeURIComponent(it.id) + '"><span class="badge ' + it.type + '">' + TYPE_LABEL[it.type] + "</span>" +
+    var img = it.image || thumb(it);
+    var kind = it.kind || TYPE_LABEL[it.type];
+    var link = "#item:" + encodeURIComponent(it.id);
+    return '<article class="card"><a class="thumb" href="' + link + '"><span class="badge ' + it.type + '">' + esc(kind) + "</span>" +
       (it.starred ? '<span class="star">\u2605</span>' : "") +
-      '<img loading="lazy" src="' + thumb(it) + '" alt="' + esc(it.title) + '"></a>' +
+      '<img loading="lazy" src="' + esc(img) + '" alt="' + esc(it.title) + '"></a>' +
       '<div class="body"><div class="cat">' + esc(it.category) + "</div>" +
-      '<h3><a href="#item:' + encodeURIComponent(it.id) + '">' + esc(it.title) + "</a></h3><p>" + esc(it.summary) + "</p>" +
-      '<div class="meta"><span>' + esc(it.source) + "</span><span>" + timeAgo(it.addedHoursAgo) + "</span></div></div></article>";
+      '<h3><a href="' + link + '">' + esc(it.title) + "</a></h3><p>" + esc(it.desc || it.summary || "") + "</p>" +
+      '<div class="meta"><a class="src" href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.source) + ' \u2197</a>' +
+      "<span>" + esc(it.year ? String(it.year) : (it.license || "")) + "</span></div></div></article>";
   }
   function row(items) {
     if (!items.length) return '<p class="lead">No entries match this filter yet.</p>';
@@ -67,7 +71,9 @@
   }
   function grid(items) {
     if (!items.length) return '<p class="lead">No entries match this filter yet.</p>';
-    return '<div class="grid">' + items.map(card).join("") + "</div>";
+    var shown = items.slice(0, 60);
+    var more = items.length > shown.length ? '<p class="small">Showing the first 60 of ' + items.length + '. Narrow the list with the filters above.</p>' : '';
+    return '<div class="grid">' + shown.map(card).join("") + "</div>" + more;
   }
   function platformCard(p) {
     var ext = p.external ? ' target="_blank" rel="noopener"' : "";
@@ -92,9 +98,9 @@
     if (category === "Recent") list = list.filter(isRecent);
     else if (category && category !== "All") list = list.filter(function (it) { return it.category === category; });
     if (filter === "starred") list = list.filter(function (it) { return it.starred; });
-    if (filter === "popularity") list.sort(function (a, b) { return b.popularity - a.popularity; });
-    else if (filter === "searches") list.sort(function (a, b) { return b.searches - a.searches; });
-    else list.sort(function (a, b) { return a.addedHoursAgo - b.addedHoursAgo; });
+    if (filter === "popular") list.sort(function (a, b) { return (b.popularity || 0) - (a.popularity || 0); });
+    else if (filter === "oldest") list.sort(function (a, b) { return (parseInt(a.year || "9999", 10) || 9999) - (parseInt(b.year || "9999", 10) || 9999); });
+    else list.sort(function (a, b) { return (a.addedHoursAgo || 0) - (b.addedHoursAgo || 0); });
     return list;
   }
   function toolbar(type, category, filter, opts) {
@@ -187,13 +193,13 @@
       return '<a class="card" style="text-decoration:none" href="#cat:' + encodeURIComponent(c.key) + '"><div class="body"><div class="cat">Category</div><h3>' + c.key + "</h3><p>" + c.blurb + '</p><div class="meta"><span>' + count + " entr" + (count === 1 ? "y" : "ies") + "</span><span>Open &rarr;</span></div></div></a>";
     }).join("");
     return '<div class="wrap"><section class="hero"><div class="kicker">Community archive</div><h1>Rare</h1>' +
-      '<p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Open a <b>section</b>, pick a <b>category</b>, then a <b>filter</b> \u2014 or search.</p>' +
+      '<p class="lead" style="max-width:70ch">A growing index of real, rare material \u2014 historical photographs, films and recordings from open archives like Wikimedia Commons and the Internet Archive, each linked to its source. Open a <b>section</b>, pick a <b>category</b>, then a <b>filter</b>.</p>' +
       '<div class="hero-actions"><a class="btn" href="#images">Browse the archive</a><a class="btn ghost" href="#about">Submit a rare find</a></div>' +
       '<div class="stat-row"><div class="stat"><b>' + ITEMS.length + '</b><span>Entries</span></div><div class="stat"><b>' + n(function (x) { return x.type === "photo"; }) + '</b><span>Photos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "video"; }) + '</b><span>Videos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "note"; }) + '</b><span>Notes</span></div><div class="stat"><b>' + starred.length + '</b><span>Starred</span></div></div></section></div>' +
       '<div class="wrap layout"><main>' +
-      '<div class="section-head"><h2>Recent \u2014 last 24 hours</h2><a class="more" href="#cat:Recent">View all &rarr;</a></div>' + row(recent) +
+      '<div class="section-head"><h2>Recently catalogued</h2><a class="more" href="#cat:Recent">View all &rarr;</a></div>' + row(recent) +
       '<div class="section-head"><h2>Starred picks</h2></div>' + row(starred) +
-      '<div class="section-head"><h2>Most popular</h2></div>' + row(listFor("", "All", "popularity").slice(0, 8)) +
+      '<div class="section-head"><h2>Most popular</h2></div>' + row(listFor("", "All", "popular").slice(0, 8)) +
       '<div class="section-head"><h2>Browse by category</h2></div>' + '<div class="row-block"><div class="row">' + cats + "</div></div>" +
       '<h2>Other Side Collection</h2><section class="collection-hero"><img src="assets/otherside.svg" alt="" onerror="this.style.display=\'none\'"><div><h1 style="font-size:1.5rem">Other Side Collection</h1><p class="lead" style="margin:0 0 12px">10 rare YouTube videos, Wikipedia pages and images, and links to Instagram, Facebook and the Internet Archive.</p><a class="btn" href="#otherside">Open the Other Side &rarr;</a></div></section>' +
       "</main>" + sidebar() + "</div>";
@@ -257,20 +263,21 @@
   function openItem(id) {
     var it = byId(id);
     if (!it) return openSheet("Not found", "<p>This entry may have moved.</p>");
-    var media = "";
-    if (it.type === "photo") media = '<figure class="detail-figure"><img src="' + thumb(it) + '" alt="' + esc(it.title) + '"><figcaption>' + esc(it.title) + " \u00b7 " + esc(it.source) + "</figcaption></figure>";
-    else if (it.type === "video") media = '<figure class="detail-figure"><div class="video-frame"><div class="play">\u25B6</div></div><figcaption>Video entry \u00b7 placeholder player.</figcaption></figure>';
-    var rel = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 6);
+    var kind = it.kind || TYPE_LABEL[it.type];
+    var media = it.image ? '<figure class="detail-figure"><img src="' + esc(it.image) + '" alt="' + esc(it.title) + '"></figure>' : "";
+    var rel = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 8);
     openSheet(it.title,
-      '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + TYPE_LABEL[it.type] + "</span>" +
+      '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + esc(kind) + "</span>" +
       (it.starred ? '<span class="star star-inline">\u2605 Starred</span>' : "") + "</div>" +
       '<div class="auto-tags"><span class="atag">Section: ' + SECTION_LABEL[it.type] + '</span><span class="atag">Category: ' + esc(it.category) + "</span>" +
       '<button type="button" class="browse-cta" data-type="' + it.type + '" data-cat="' + esc(it.category) + '">Browse all ' + SECTION_LABEL[it.type] + " \u00b7 " + esc(it.category) + " \u2192</button></div>" +
-      '<p class="lead">' + esc(it.summary) + "</p>" + media +
-      '<table class="meta-table"><tr><th>Type</th><td>' + TYPE_LABEL[it.type] + "</td></tr><tr><th>Category</th><td>" + esc(it.category) + "</td></tr>" +
-      "<tr><th>Origin</th><td>" + esc(it.place || "\u2014") + "</td></tr><tr><th>Source</th><td>" + esc(it.source) + "</td></tr>" +
-      "<tr><th>Popularity</th><td>" + it.popularity + "</td></tr><tr><th>Searches</th><td>" + it.searches + "</td></tr><tr><th>Added</th><td>" + timeAgo(it.addedHoursAgo) + "</td></tr></table>" +
-      "<h2>Notes</h2><p>" + esc(it.body) + "</p>" +
+      '<p class="lead">' + esc(it.desc || "") + "</p>" + media +
+      '<p><a class="btn" href="' + esc(it.link) + '" target="_blank" rel="noopener">Open original on ' + esc(it.source) + " \u2197</a></p>" +
+      '<table class="meta-table"><tr><th>Type</th><td>' + esc(kind) + "</td></tr><tr><th>Category</th><td>" + esc(it.category) + "</td></tr>" +
+      "<tr><th>Source</th><td>" + esc(it.source) + "</td></tr>" +
+      (it.license ? "<tr><th>Licence</th><td>" + esc(it.license) + "</td></tr>" : "") +
+      (it.year ? "<tr><th>Year</th><td>" + esc(String(it.year)) + "</td></tr>" : "") +
+      '<tr><th>Link</th><td><a href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.link) + "</a></td></tr></table>" +
       (rel.length ? "<h2>More in " + esc(it.category) + "</h2>" + row(rel) : ""));
   }
   function openBrowse(type, category, filter) {
