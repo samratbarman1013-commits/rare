@@ -72,27 +72,26 @@
     var nav = [
       ["videos.html", "Videos", "videos"],
       ["notes.html", "Notes", "notes"],
-      ["images.html", "Images", "images"],
-      ["otherside.html", "Other Side", "otherside"]
+      ["images.html", "Images", "images"]
     ].map(function (n) {
       return '<a href="' + n[0] + '"' + (active === n[2] ? ' class="active"' : "") + ">" + n[1] + "</a>";
     }).join("");
-    var chips = CATS.map(function (c) {
-      return '<a class="chip" href="category.html?cat=' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a>";
+    var menu = CATS.map(function (c) {
+      return '<a href="category.html?cat=' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a>";
     }).join("");
     return '' +
       '<div class="wrap">' +
       '<div class="tier1">' +
-      '<a class="brand" href="index.html"><span class="brand-mark">R</span>' +
+      '<a class="brand" href="index.html" title="Home"><span class="brand-mark">R</span>' +
       '<span>Rare<small>community archive</small></span></a>' +
-      '<form class="search-form" id="search-form" action="search.html" method="get" role="search" autocomplete="off">' +
-      '<input type="search" name="q" id="global-search" placeholder="Search rare photos, videos and notes\u2026" aria-label="Search Rare">' +
-      '<button type="submit">Search</button>' +
-      '<div class="suggest" id="suggest" role="listbox"></div>' +
-      "</form>" +
-      '<a class="about-link' + (active === "about" ? " active" : "") + '" href="about.html">About</a></div>' +
-      '<nav class="tier2" aria-label="Pages"><span class="tier-label">Pages</span>' + nav + "</nav>" +
-      '<nav class="tier3" aria-label="Categories"><span class="tier-label">Categories</span><div class="cat-strip">' + chips + "</div></nav>" +
+      '<div class="tier1-right">' +
+      '<a class="about-link' + (active === "about" ? " active" : "") + '" href="about.html">About</a>' +
+      '<a class="icon-btn" href="search.html" aria-label="Search" title="Search">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4-4"/></svg></a></div></div>' +
+      '<div class="tier2-bar"><nav class="tier2" aria-label="Sections">' + nav + "</nav>" +
+      '<div class="cat-menu-wrap"><button type="button" class="cat-menu-btn" id="cat-menu-btn" aria-haspopup="true" aria-expanded="false">Category <span class="caret">\u25BE</span></button>' +
+      '<div class="cat-menu" id="cat-menu">' + menu +
+      '<div class="cat-menu-sep"></div><a href="otherside.html">Other Side Collection</a></div></div></div>' +
       "</div>";
   }
   function footerHTML() {
@@ -213,6 +212,11 @@
     if (h) h.innerHTML = headerHTML(page);
     if (f) f.innerHTML = footerHTML();
     wireSuggest();
+    var cmb = document.getElementById("cat-menu-btn"), cm = document.getElementById("cat-menu");
+    if (cmb && cm) {
+      cmb.addEventListener("click", function (e) { e.stopPropagation(); cm.classList.toggle("open"); });
+      document.addEventListener("click", function (e) { if (e.target !== cmb && !cm.contains(e.target)) cm.classList.remove("open"); });
+    }
 
     var params = new URLSearchParams(location.search);
 
