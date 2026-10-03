@@ -244,28 +244,30 @@ html,body{height:100%}
 body.shell{overflow:hidden;display:flex;flex-direction:column;height:100vh}
 body.shell #site-header{flex:0 0 auto;z-index:60}
 
-/* three-tier header */
-.tier1{display:flex;align-items:center;gap:18px;padding:9px 0}
-.tier2{display:flex;align-items:center;gap:4px;border-top:1px solid var(--border-soft);padding:3px 0;
+/* two-tier header */
+.tier1{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.tier1-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.icon-btn{width:38px;height:38px;border:1px solid var(--border);border-radius:50%;background:#fff;
+  display:grid;place-items:center;color:var(--text);cursor:pointer;padding:0}
+.icon-btn:hover{border-color:var(--link);color:var(--link)}
+.tier2-bar{display:flex;align-items:center;gap:6px;border-top:1px solid var(--border-soft);padding:5px 0}
+.tier2{display:flex;align-items:center;gap:6px;flex:1 1 auto;min-width:0;
   flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
 .tier2::-webkit-scrollbar{height:0}
-.tier2 a{flex:0 0 auto}
-.tier3{display:flex;align-items:center;gap:8px;border-top:1px solid var(--border-soft);padding:5px 0;
-  flex-wrap:nowrap;overflow:hidden}
-.tier-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
-  flex:0 0 auto;padding-right:6px;border-right:1px solid var(--border-soft);margin-right:4px}
-.tier2 a{padding:7px 13px;font-size:.92rem;color:var(--text);border-radius:3px;white-space:nowrap}
+.tier2 a{padding:8px 15px;font-size:.95rem;color:var(--text);border-radius:999px;white-space:nowrap;flex:0 0 auto;border:1px solid transparent}
 .tier2 a:hover{background:var(--panel);text-decoration:none}
-.tier2 a.active{background:var(--rare-soft);color:var(--rare);font-weight:600}
-
-/* horizontally scrolling category strip (tier 3) */
-.cat-strip{flex:1 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
-  -ms-overflow-style:none;margin:0;padding:2px 0}
-.cat-strip::-webkit-scrollbar{height:0}
-.cat-strip .chip{flex:0 0 auto;scroll-snap-align:start}
-.strip-nav{flex:0 0 auto;width:26px;height:26px;border:1px solid var(--border);background:#fff;border-radius:50%;
-  cursor:pointer;color:var(--muted);display:grid;place-items:center;font-size:1rem;line-height:1;padding:0}
-.strip-nav:hover{border-color:var(--link);color:var(--link)}
+.tier2 a.active{background:var(--rare-soft);border-color:var(--rare);color:var(--rare);font-weight:600}
+.cat-menu-wrap{position:relative;flex:0 0 auto}
+.cat-menu-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;font-family:inherit;font-size:.95rem;
+  border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--text);cursor:pointer;white-space:nowrap}
+.cat-menu-btn:hover{border-color:var(--link);color:var(--link)}
+.cat-menu-btn .caret{font-size:.7rem}
+.cat-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:220px;background:#fff;border:1px solid var(--border);
+  border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.16);padding:8px;display:none;z-index:90}
+.cat-menu.open{display:block}
+.cat-menu a{display:block;padding:9px 12px;border-radius:7px;color:var(--text);font-size:.92rem;white-space:nowrap}
+.cat-menu a:hover{background:var(--panel);text-decoration:none}
+.cat-menu-sep{height:1px;background:var(--border-soft);margin:6px 4px}
 
 /* track + panels */
 .track{flex:1 1 auto;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
@@ -280,18 +282,17 @@ body.shell #site-header{flex:0 0 auto;z-index:60}
 .scroll-hint{font-size:.78rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 
 /* horizontal card rows */
-.row-wrap{position:relative}
-.row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;padding:6px 2px 14px;
+.row-block{position:relative}
+.row-nav{display:flex;justify-content:flex-end;gap:6px;margin:0 0 4px}
+.rn{width:30px;height:30px;border:1px solid var(--border);background:#fff;border-radius:50%;cursor:pointer;
+  color:var(--muted);display:grid;place-items:center;font-size:1rem;line-height:1;padding:0}
+.rn:hover{border-color:var(--link);color:var(--link)}
+.row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;padding:2px 2px 14px;
   -webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .row::-webkit-scrollbar{height:8px}
 .row::-webkit-scrollbar-thumb{background:#c8ccd1;border-radius:8px}
 .row .card{flex:0 0 300px;scroll-snap-align:start}
 .row .platform{flex:0 0 250px}
-.row-arrow{position:absolute;top:38%;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);
-  background:#fff;color:var(--text);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:3;
-  display:grid;place-items:center;font-size:1.05rem;line-height:1}
-.row-arrow:hover{border-color:var(--link);color:var(--link)}
-.row-arrow.l{left:-10px}.row-arrow.r{right:-10px}
 
 /* big panel arrows */
 .nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:65;width:40px;height:40px;border-radius:50%;
@@ -321,9 +322,9 @@ body.shell #site-header{flex:0 0 auto;z-index:60}
   .tier2 a{padding:7px 9px;font-size:.85rem}
 }
 @media(max-width:760px){
-  .tier1{flex-wrap:wrap;gap:10px}
-  .search-form{flex-basis:100%;order:3;max-width:none}
-  .about-link{order:2;margin-left:auto}
+  .tier1{gap:8px}
+  .tier2 a{padding:7px 12px;font-size:.9rem}
+  .cat-menu-btn{padding:7px 12px;font-size:.9rem}
 }
 @media(max-width:620px){
   .tier-label{display:none}
@@ -625,18 +626,16 @@ window.RARE_COLLECTION = {
 
 </script>
 <script>
-/* Rare — horizontal-scroll shell with a two-way way to find content:
-   (1) pick a section (Images / Videos / Notes) > pick a category > pick a filter
-       (New / Starred / Popularity / Most searched), or
-   (2) search directly from the top bar.
-   Opening any entry applies its own section + category automatically.
-   Tier 1: brand(=Home link) · search · About   Tier 2: sections   Tier 3: categories. */
+/* Rare — horizontal-scroll shell.
+   Tier 1: brand (=Home) · About · search icon (opens the search panel).
+   Tier 2: sections (Videos · Images · Notes) · a Category pop-up menu.
+   No third row. Content is found by section > category > filter, or by search.
+   Opening an entry applies its own section + category automatically. */
 (function () {
   var S = window.RARE_SITE, CATS = window.RARE_CATEGORIES, ITEMS = window.RARE_ITEMS;
   var COL = window.RARE_COLLECTION || { platforms: [], youtube: [], wikipedia: { pages: [], images: [] } };
   var PANELS = [["home", "Home"], ["images", "Images"], ["videos", "Videos"], ["notes", "Notes"], ["about", "About Us"], ["otherside", "Other Side"]];
   var SECTION_LABEL = { photo: "Images", video: "Videos", note: "Notes" };
-  var SECTION_SLUG = { photo: "images", video: "videos", note: "notes" };
   var CAT_KEYS = CATS.map(function (c) { return c.key; });
   var FILTERS = [["new", "New"], ["starred", "Starred"], ["popularity", "Popularity"], ["searches", "Most searched"]];
 
@@ -689,9 +688,10 @@ window.RARE_COLLECTION = {
   }
   function row(items) {
     if (!items.length) return '<p class="lead">No entries match this filter yet.</p>';
-    return '<div class="row-wrap"><button class="row-arrow l" aria-label="Scroll left">\u2039</button>' +
-      '<div class="row">' + items.map(card).join("") + "</div>" +
-      '<button class="row-arrow r" aria-label="Scroll right">\u203a</button></div>';
+    return '<div class="row-block"><div class="row-nav">' +
+      '<button type="button" class="rn" data-dir="-1" aria-label="Scroll left">\u2039</button>' +
+      '<button type="button" class="rn" data-dir="1" aria-label="Scroll right">\u203a</button></div>' +
+      '<div class="row">' + items.map(card).join("") + "</div></div>";
   }
   function grid(items) {
     if (!items.length) return '<p class="lead">No entries match this filter yet.</p>';
@@ -713,7 +713,7 @@ window.RARE_COLLECTION = {
   }
   function linkCard(x) { return '<a class="link-card" href="' + x.url + '" target="_blank" rel="noopener"><b>' + esc(x.title) + "</b><small>" + esc(x.desc) + '</small><span class="ext">\u2197</span></a>'; }
 
-  /* ---------- the filtering engine ---------- */
+  /* ---------- filtering engine ---------- */
   function listFor(type, category, filter) {
     var list = ITEMS.slice();
     if (type) list = list.filter(function (it) { return it.type === type; });
@@ -744,8 +744,7 @@ window.RARE_COLLECTION = {
       '<div class="browse-results"></div>';
   }
   function renderBrowse(bar) {
-    var wrap = bar.parentNode;
-    var res = wrap.querySelector(".browse-results");
+    var wrap = bar.parentNode, res = wrap.querySelector(".browse-results");
     if (!res) return;
     var typeSel = bar.querySelector(".bb-type");
     var type = typeSel ? typeSel.value : (bar.getAttribute("data-type") || "");
@@ -756,15 +755,14 @@ window.RARE_COLLECTION = {
     var bits = [];
     if (type) bits.push(SECTION_LABEL[type]);
     if (cat && cat !== "All") bits.push(cat);
-    var label = bits.length ? bits.join(" \u00b7 ") : "Everything";
-    res.innerHTML = '<p class="tagline">' + esc(label) + " \u2014 <b>" + list.length + "</b> entr" + (list.length === 1 ? "y" : "ies") + "</p>" + row(list);
+    res.innerHTML = '<p class="tagline">' + esc(bits.length ? bits.join(" \u00b7 ") : "Everything") + " \u2014 <b>" + list.length + "</b> entr" + (list.length === 1 ? "y" : "ies") + "</p>" + row(list);
   }
   function wireBrowse(scope) {
     var bars = (scope || document).querySelectorAll(".browse-bar");
     for (var i = 0; i < bars.length; i++) {
       (function (bar) {
-        var cat = bar.querySelector(".bb-cat");
-        var typeSel = bar.querySelector(".bb-type");
+        if (bar.getAttribute("data-wired")) return; bar.setAttribute("data-wired", "1");
+        var cat = bar.querySelector(".bb-cat"), typeSel = bar.querySelector(".bb-type");
         if (cat) cat.addEventListener("change", function () { renderBrowse(bar); });
         if (typeSel) typeSel.addEventListener("change", function () { renderBrowse(bar); });
         var chips = bar.querySelectorAll(".fchip");
@@ -772,8 +770,7 @@ window.RARE_COLLECTION = {
           chips[c].addEventListener("click", function () {
             var all = bar.querySelectorAll(".fchip");
             for (var k = 0; k < all.length; k++) all[k].classList.remove("active");
-            this.classList.add("active");
-            renderBrowse(bar);
+            this.classList.add("active"); renderBrowse(bar);
           });
         }
         renderBrowse(bar);
@@ -781,30 +778,29 @@ window.RARE_COLLECTION = {
     }
   }
 
-  /* ---------- three-tier header ---------- */
+  /* ---------- two-tier header ---------- */
   function headerHTML(activePanel) {
-    var tier2 = [["images", "Images"], ["videos", "Videos"], ["notes", "Notes"], ["otherside", "Other Side"]]
+    var tier2 = [["videos", "Videos"], ["images", "Images"], ["notes", "Notes"]]
       .map(function (p) { return '<a href="#' + p[0] + '" data-panel="' + p[0] + '"' + (activePanel === p[0] ? ' class="active"' : "") + ">" + p[1] + "</a>"; }).join("");
-    var tier3 = CATS.map(function (c) { return '<a class="chip" href="#cat:' + encodeURIComponent(c.key) + '">' + esc(c.key) + "</a>"; }).join("");
+    var menu = CAT_KEYS.map(function (k) { return '<a role="menuitem" href="#cat:' + encodeURIComponent(k) + '">' + esc(k) + "</a>"; }).join("");
     return '<div class="wrap">' +
-      /* tier 1: brand (=Home link) · search · About */
+      /* tier 1: brand (=Home) · About · search icon */
       '<div class="tier1"><a class="brand" href="#home" title="Home"><span class="brand-mark">R</span><span>Rare<small>community archive</small></span></a>' +
-      '<form class="search-form" id="search-form" role="search" autocomplete="off">' +
-      '<input type="search" id="global-search" placeholder="Search rare photos, videos and notes\u2026" aria-label="Search Rare">' +
-      '<button type="submit">Search</button><div class="suggest" id="suggest" role="listbox"></div></form>' +
-      '<a class="about-link' + (activePanel === "about" ? " active" : "") + '" href="#about" data-panel="about">About</a></div>' +
-      /* tier 2: sections */
-      '<nav class="tier2" aria-label="Sections"><span class="tier-label">Sections</span>' + tier2 + "</nav>" +
-      /* tier 3: categories */
-      '<nav class="tier3" aria-label="Categories"><span class="tier-label">Categories</span>' +
-      '<button class="strip-nav" id="strip-l" aria-label="Scroll categories left">\u2039</button>' +
-      '<div class="cat-strip" id="cat-strip">' + tier3 + "</div>" +
-      '<button class="strip-nav" id="strip-r" aria-label="Scroll categories right">\u203a</button></nav></div>';
+      '<div class="tier1-right">' +
+      '<a class="about-link' + (activePanel === "about" ? " active" : "") + '" href="#about" data-panel="about">About</a>' +
+      '<button type="button" class="icon-btn" id="search-toggle" aria-label="Search" title="Search">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4-4"/></svg>' +
+      "</button></div></div>" +
+      /* tier 2: sections · category pop-up */
+      '<div class="tier2-bar"><nav class="tier2" aria-label="Sections">' + tier2 + "</nav>" +
+      '<div class="cat-menu-wrap"><button type="button" class="cat-menu-btn" id="cat-menu-btn" aria-haspopup="true" aria-expanded="false">Category <span class="caret">\u25BE</span></button>' +
+      '<div class="cat-menu" id="cat-menu" role="menu">' + menu +
+      '<div class="cat-menu-sep"></div><a role="menuitem" href="#otherside">Other Side Collection</a></div></div></div></div>';
   }
 
   /* ---------- panels ---------- */
   function sidebar() {
-    return '<aside class="sidebar"><div class="side-box"><h3>Find content</h3><p class="small">Pick a <b>section</b>, a <b>category</b> and a <b>filter</b> (New, Starred, Popularity, Most searched) \u2014 or search directly from the top bar.</p></div>' +
+    return '<aside class="sidebar"><div class="side-box"><h3>Find content</h3><p class="small">Open a <b>section</b>, choose a <b>category</b> and a <b>filter</b> \u2014 or tap the search icon at the top.</p></div>' +
       '<div class="side-box"><h3>Contribute</h3><p class="small">Anyone can add to Rare. Send a photo, a video link or notes.</p><p><a class="btn" href="#about" style="padding:8px 16px;font-size:.85rem">Submit a rare find</a></p></div>' +
       '<div class="side-box"><h3>Other Side</h3><ul><li><a href="#open:youtube">YouTube \u2014 10 rare videos</a></li><li><a href="#open:wikipedia">Wikipedia \u2014 pages &amp; images</a></li><li><a href="#otherside">All platforms</a></li></ul></div>' +
       '<div class="side-box"><h3>Contact</h3><ul><li>\u2709 <a href="mailto:' + S.email + '">' + esc(S.email) + '</a></li><li>\uD83D\uDCAC <a href="' + S.whatsappLink + '" target="_blank" rel="noopener">WhatsApp ' + esc(S.whatsapp) + "</a></li></ul></div></aside>";
@@ -819,23 +815,20 @@ window.RARE_COLLECTION = {
       return '<a class="card" style="text-decoration:none" href="#cat:' + encodeURIComponent(c.key) + '"><div class="body"><div class="cat">Category</div><h3>' + c.key + "</h3><p>" + c.blurb + '</p><div class="meta"><span>' + count + " entr" + (count === 1 ? "y" : "ies") + "</span><span>Open &rarr;</span></div></div></a>";
     }).join("");
     return '<div class="wrap"><section class="hero"><div class="kicker">Community archive</div><h1>Rare</h1>' +
-      '<p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Find things two ways: browse by <b>section \u203a category \u203a filter</b>, or <b>search</b> directly. Like Wikipedia, anyone can contribute.</p>' +
-      '<div class="hero-actions"><a class="btn" href="#images">Browse the archive</a><a class="btn ghost" href="#about">Submit a rare find</a><a class="btn ghost" href="#open:search">Search</a></div>' +
-      '<p class="scroll-hint" style="margin-top:14px">\u2190 Swipe or scroll sideways to move between pages \u2192</p>' +
-      '<div class="stat-row"><div class="stat"><b>' + ITEMS.length + '</b><span>Entries</span></div><div class="stat"><b>' + n(function (x) { return x.type === "photo"; }) + '</b><span>Rare photos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "video"; }) + '</b><span>Rare videos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "note"; }) + '</b><span>Rare notes</span></div><div class="stat"><b>' + starred.length + '</b><span>Starred</span></div></div></section></div>' +
+      '<p class="lead" style="max-width:70ch">A wiki for the rare and the nearly lost. Open a <b>section</b>, pick a <b>category</b>, then a <b>filter</b> \u2014 or search.</p>' +
+      '<div class="hero-actions"><a class="btn" href="#images">Browse the archive</a><a class="btn ghost" href="#about">Submit a rare find</a></div>' +
+      '<div class="stat-row"><div class="stat"><b>' + ITEMS.length + '</b><span>Entries</span></div><div class="stat"><b>' + n(function (x) { return x.type === "photo"; }) + '</b><span>Photos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "video"; }) + '</b><span>Videos</span></div><div class="stat"><b>' + n(function (x) { return x.type === "note"; }) + '</b><span>Notes</span></div><div class="stat"><b>' + starred.length + '</b><span>Starred</span></div></div></section></div>' +
       '<div class="wrap layout"><main>' +
-      '<div class="section-head"><h2>Recent \u2014 last 24 hours</h2><a class="more" href="#cat:Recent">View all recent &rarr;</a></div>' + row(recent) +
-      '<div class="section-head"><h2>Starred picks</h2><span class="scroll-hint">scroll \u2192</span></div>' + row(starred) +
-      '<div class="section-head"><h2>Most popular</h2><span class="scroll-hint">scroll \u2192</span></div>' + row(listFor("", "All", "popularity").slice(0, 8)) +
-      '<div class="section-head"><h2>Browse by category</h2><span class="scroll-hint">scroll \u2192</span></div><div class="row-wrap"><button class="row-arrow l">\u2039</button><div class="row">' + cats + '</div><button class="row-arrow r">\u203a</button></div>' +
+      '<div class="section-head"><h2>Recent \u2014 last 24 hours</h2><a class="more" href="#cat:Recent">View all &rarr;</a></div>' + row(recent) +
+      '<div class="section-head"><h2>Starred picks</h2></div>' + row(starred) +
+      '<div class="section-head"><h2>Most popular</h2></div>' + row(listFor("", "All", "popularity").slice(0, 8)) +
+      '<div class="section-head"><h2>Browse by category</h2></div>' + '<div class="row-block"><div class="row">' + cats + "</div></div>" +
       '<h2>Other Side Collection</h2><section class="collection-hero"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Other%20Side%20Collection%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23b32424%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235b1f9e%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3CradialGradient%20id%3D%22h%22%20cx%3D%220.5%22%20cy%3D%220.45%22%20r%3D%220.65%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232b2f4a%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230b0d18%22/%3E%0A%20%20%20%20%3C/radialGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%20fill%3D%22url%28%23g%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2221%22%20fill%3D%22url%28%23h%29%22/%3E%0A%20%20%3Cellipse%20cx%3D%2232%22%20cy%3D%2232%22%20rx%3D%2227%22%20ry%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.6%22%20stroke-width%3D%222%22%20transform%3D%22rotate%28-22%2032%2032%29%22/%3E%0A%20%20%3Ccircle%20cx%3D%2251%22%20cy%3D%2219%22%20r%3D%223.4%22%20fill%3D%22%23ffd166%22/%3E%0A%20%20%3Ccircle%20cx%3D%2213%22%20cy%3D%2245%22%20r%3D%222.2%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.85%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%224.2%22%20fill%3D%22%23ffffff%22/%3E%0A%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%221.7%22%20fill%3D%22%23b32424%22/%3E%0A%3C/svg%3E%0A" alt="" onerror="this.style.display=\'none\'"><div><h1 style="font-size:1.5rem">Other Side Collection</h1><p class="lead" style="margin:0 0 12px">10 rare YouTube videos, Wikipedia pages and images, and links to Instagram, Facebook and the Internet Archive.</p><a class="btn" href="#otherside">Open the Other Side &rarr;</a></div></section>' +
       "</main>" + sidebar() + "</div>";
   }
   function pSection(type, title, kicker, lead) {
-    return '<div class="wrap layout"><main><div class="panel-head"><div><div class="panel-kicker">' + kicker + '</div><h1 style="border:none;margin:0">' + title + "</h1></div>" +
-      '<span class="scroll-hint">scroll sideways \u2192</span></div><p class="lead">' + lead + "</p>" +
-      '<div class="browse-wrap">' + toolbar(type, "All", "new", {}) + "</div>" +
-      "</main>" + sidebar() + "</div>";
+    return '<div class="wrap layout"><main><div class="panel-head"><div><div class="panel-kicker">' + kicker + '</div><h1 style="border:none;margin:0">' + title + "</h1></div></div><p class=\"lead\">" + lead + "</p>" +
+      '<div class="browse-wrap">' + toolbar(type, "All", "new", {}) + "</div></main>" + sidebar() + "</div>";
   }
   function pAbout() {
     return '<div class="wrap layout"><main><div class="panel-kicker">About</div><h1>About Us</h1>' +
@@ -858,8 +851,8 @@ window.RARE_COLLECTION = {
   }
   function pOtherside() {
     return '<div class="wrap layout"><main><div class="panel-kicker">Beyond the archive</div><h1 style="border:none">Other Side Collection</h1>' +
-      '<p class="lead">The rare things that live somewhere else \u2014 our shelf of outside sources. Scroll the row sideways to browse the platforms.</p>' +
-      '<div class="row-wrap"><button class="row-arrow l">\u2039</button><div class="row">' + COL.platforms.map(platformCard).join("") + '</div><button class="row-arrow r">\u203a</button></div>' +
+      '<p class="lead">The rare things that live somewhere else \u2014 our shelf of outside sources.</p>' +
+      '<div class="row-block"><div class="row-nav"><button class="rn" data-dir="-1" aria-label="Scroll left">\u2039</button><button class="rn" data-dir="1" aria-label="Scroll right">\u203a</button></div><div class="row">' + COL.platforms.map(platformCard).join("") + "</div></div>" +
       '<h2>Start here</h2><div class="grid">' +
       '<a class="card" style="text-decoration:none" href="#open:youtube"><div class="body"><div class="cat">Other Side &middot; YouTube</div><h3>10 rare videos</h3><p>From the oldest surviving film of 1888 to lost 1984 footage \u2014 real, watchable, rare.</p><div class="meta"><span>By link</span><span>Open &rarr;</span></div></div></a>' +
       '<a class="card" style="text-decoration:none" href="#open:wikipedia"><div class="body"><div class="cat">Other Side &middot; Wikipedia</div><h3>Pages &amp; images</h3><p>Rare pages on lost media and rediscovered films, plus free historical images.</p><div class="meta"><span>Pages + images</span><span>Open &rarr;</span></div></div></a>' +
@@ -879,14 +872,11 @@ window.RARE_COLLECTION = {
     sheet.scrollTop = 0;
     var b = document.getElementById("sheet-back");
     if (b) b.addEventListener("click", closeSheet);
-    wireRows(sheet);
-    wireBrowse(sheet);
+    wireRows(sheet); wireBrowse(sheet);
     var ctas = sheet.querySelectorAll(".browse-cta");
     for (var i = 0; i < ctas.length; i++) {
       (function (btn) {
-        btn.addEventListener("click", function () {
-          openBrowse(btn.getAttribute("data-type") || "", btn.getAttribute("data-cat") || "All", "new");
-        });
+        btn.addEventListener("click", function () { openBrowse(btn.getAttribute("data-type") || "", btn.getAttribute("data-cat") || "All", "new"); });
       })(ctas[i]);
     }
   }
@@ -899,7 +889,6 @@ window.RARE_COLLECTION = {
     if (it.type === "photo") media = '<figure class="detail-figure"><img src="' + thumb(it) + '" alt="' + esc(it.title) + '"><figcaption>' + esc(it.title) + " \u00b7 " + esc(it.source) + "</figcaption></figure>";
     else if (it.type === "video") media = '<figure class="detail-figure"><div class="video-frame"><div class="play">\u25B6</div></div><figcaption>Video entry \u00b7 placeholder player.</figcaption></figure>';
     var rel = ITEMS.filter(function (x) { return x.category === it.category && x.id !== it.id; }).slice(0, 6);
-    /* automatic section + category applied to this entry */
     openSheet(it.title,
       '<div class="detail-head"><h1 style="border:none;margin:0">' + esc(it.title) + '</h1><span class="badge ' + it.type + '" style="position:static">' + TYPE_LABEL[it.type] + "</span>" +
       (it.starred ? '<span class="star star-inline">\u2605 Starred</span>' : "") + "</div>" +
@@ -914,8 +903,7 @@ window.RARE_COLLECTION = {
   }
   function openBrowse(type, category, filter) {
     var title = (type ? SECTION_LABEL[type] : "Everything") + (category && category !== "All" ? " \u00b7 " + category : "");
-    openSheet(title, '<p class="lead">Choose a section, a category and a filter to narrow the archive.</p>' +
-      '<div class="browse-wrap">' + toolbar(type || "", category || "All", filter || "new", { sectionSelect: true }) + "</div>");
+    openSheet(title, '<div class="browse-wrap">' + toolbar(type || "", category || "All", filter || "new", { sectionSelect: true }) + "</div>");
   }
   function openCategory(key) {
     var meta = CATS.filter(function (c) { return c.key === key; })[0] || CATS[0];
@@ -925,16 +913,15 @@ window.RARE_COLLECTION = {
   function openSearch(q) {
     var res = search(q);
     openSheet("Search the archive",
-      '<p class="lead">Direct search across every section and category.</p>' +
       '<form class="search-form" id="sheet-search" role="search" style="max-width:720px;margin:0 0 14px"><input type="search" id="sheet-q" value="' + esc(q) + '" placeholder="Search rare photos, videos and notes\u2026"><button type="submit">Search</button></form>' +
       '<p class="tagline">' + (q ? "<b>" + res.length + "</b> result" + (res.length === 1 ? "" : "s") + " for \u201c" + esc(q) + "\u201d" : "Type a word \u2014 try \u201cprototype\u201d, \u201cdemo\u201d, \u201cmap\u201d or \u201clost\u201d.") + "</p>" + (q ? grid(res) : ""));
     var f = document.getElementById("sheet-search");
     if (f) f.addEventListener("submit", function (e) { e.preventDefault(); openSearch(document.getElementById("sheet-q").value.trim()); });
+    var si = document.getElementById("sheet-q");
+    if (si) { try { si.focus(); } catch (e) {} }
   }
   function openYoutube() {
     openSheet("Other Side \u201a YouTube", '<p class="lead">Ten rare videos, kept by link. Each opens on YouTube in a new tab \u2014 nothing is copied, and all credit stays with the original uploaders.</p>' +
-      '<p class="small"><b>' + COL.youtube.length + '</b> rare videos \u2014 scroll the row \u2192</p>' +
-      '<div class="row-wrap"><button class="row-arrow l">\u2039</button><div class="row">' + COL.youtube.map(function (v) { return '<div style="flex:0 0 300px">' + videoCard(v) + "</div>"; }).join("") + '</div><button class="row-arrow r">\u203a</button></div>' +
       "<h2>All videos</h2><div class=\"yt-grid\">" + COL.youtube.map(videoCard).join("") + "</div>" +
       '<div class="notice">External YouTube links \u2014 if a video is removed by its owner the link may stop working.</div>');
   }
@@ -964,7 +951,7 @@ window.RARE_COLLECTION = {
   }
 
   /* ---------- wiring ---------- */
-  var track, panels = [], idx = 0;
+  var track, idx = 0;
   function panelIndex(key) { for (var i = 0; i < PANELS.length; i++) if (PANELS[i][0] === key) return i; return 0; }
   function goTo(key) {
     idx = panelIndex(key);
@@ -980,35 +967,29 @@ window.RARE_COLLECTION = {
   function currentIndex() { return Math.round(track.scrollLeft / Math.max(1, track.clientWidth)); }
 
   function wireRows(scope) {
-    var wraps = (scope || document).querySelectorAll(".row-wrap");
-    for (var i = 0; i < wraps.length; i++) {
-      (function (w) {
-        var r = w.querySelector(".row"), l = w.querySelector(".row-arrow.l"), rr = w.querySelector(".row-arrow.r");
-        if (!r || r.getAttribute("data-wired")) return; r.setAttribute("data-wired", "1");
-        if (l) l.addEventListener("click", function () { r.scrollBy({ left: -r.clientWidth * 0.85, behavior: "smooth" }); });
-        if (rr) rr.addEventListener("click", function () { r.scrollBy({ left: r.clientWidth * 0.85, behavior: "smooth" }); });
-      })(wraps[i]);
+    var navs = (scope || document).querySelectorAll(".row-nav");
+    for (var i = 0; i < navs.length; i++) {
+      (function (nav) {
+        if (nav.getAttribute("data-wired")) return; nav.setAttribute("data-wired", "1");
+        var block = nav.parentNode, r = block ? block.querySelector(".row") : null;
+        if (!r) return;
+        var btns = nav.querySelectorAll(".rn");
+        for (var b = 0; b < btns.length; b++) {
+          (function (btn) {
+            btn.addEventListener("click", function () { r.scrollBy({ left: parseInt(btn.getAttribute("data-dir"), 10) * r.clientWidth * 0.85, behavior: "smooth" }); });
+          })(btns[b]);
+        }
+      })(navs[i]);
     }
   }
   function wireHeader() {
-    var strip = document.getElementById("cat-strip");
-    var sl = document.getElementById("strip-l"), sr = document.getElementById("strip-r");
-    if (sl) sl.addEventListener("click", function () { strip.scrollBy({ left: -180, behavior: "smooth" }); });
-    if (sr) sr.addEventListener("click", function () { strip.scrollBy({ left: 180, behavior: "smooth" }); });
-    var form = document.getElementById("search-form"), input = document.getElementById("global-search"), box = document.getElementById("suggest");
-    if (form) form.addEventListener("submit", function (e) { e.preventDefault(); openSearch(input.value.trim()); });
-    if (input && box) {
-      input.addEventListener("input", function () {
-        var q = input.value.trim();
-        if (q.length < 2) { box.classList.remove("open"); box.innerHTML = ""; return; }
-        var hits = search(q).slice(0, 6);
-        if (!hits.length) { box.innerHTML = '<div class="s-empty">No matches for \u201c' + esc(q) + '\u201d</div>'; box.classList.add("open"); return; }
-        box.innerHTML = hits.map(function (it) {
-          return '<a href="#item:' + encodeURIComponent(it.id) + '"><span class="s-type ' + it.type + '">' + TYPE_LABEL[it.type] + "</span><span>" + esc(it.title) + " <span style='color:#72777d'>\u00b7 " + esc(it.category) + "</span></span></a>";
-        }).join("");
-        box.classList.add("open");
-      });
-      document.addEventListener("click", function (e) { if (!form.contains(e.target)) box.classList.remove("open"); });
+    var st = document.getElementById("search-toggle");
+    if (st) st.addEventListener("click", function () { openSearch(""); });
+    var cmb = document.getElementById("cat-menu-btn"), cm = document.getElementById("cat-menu");
+    if (cmb && cm) {
+      cmb.addEventListener("click", function (e) { e.stopPropagation(); var o = cm.classList.toggle("open"); cmb.setAttribute("aria-expanded", o ? "true" : "false"); });
+      cm.addEventListener("click", function (e) { if (e.target.closest("a")) cm.classList.remove("open"); });
+      document.addEventListener("click", function (e) { if (e.target !== cmb && !cm.contains(e.target)) cm.classList.remove("open"); });
     }
   }
   function wireAboutForm() {
